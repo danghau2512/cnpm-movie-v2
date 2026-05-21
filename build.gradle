@@ -1,0 +1,117 @@
+plugins {
+    id 'java'
+    id 'war'
+    id "org.hidetake.ssh" version "2.11.2"
+
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
+    implementation 'org.jdbi:jdbi3-core:3.50.0'
+
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+war {
+    archiveFileName = 'ROOT.war'
+}
+remotes {
+    server {
+        host = '192.168.216.129'
+        user = 'danghau2512'
+        password = 'Hau!25122005'
+    }
+}
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+tasks.register('dockerStopTomcat') {
+    doLast {
+        println 'begin dockerStopTomcat for CineBook'
+
+        ssh.run {
+            session(remotes.server) {
+                execute 'docker inspect tomcat-cinebook >/dev/null 2>&1 && docker rm -f tomcat-cinebook || echo "tomcat-cinebook not found, skip remove"'
+            }
+        }
+    }
+}
+
+tasks.register('dockerUploadWar') {
+    dependsOn war
+
+    doLast {
+        println 'begin dockerUploadWar for CineBook'
+
+        ssh.run {
+            session(remotes.server) {
+                execute 'mkdir -p /usr/deploy/cinebook'
+
+                execute 'docker run --rm ' +
+                        '-v /usr/deploy/cinebook:/deploy ' +
+                        'tomcat:10.1 ' +
+                        'sh -c "rm -rf /deploy/ROOT /deploy/ROOT.war"'
+
+                put from: "${project.projectDir}/build/libs/ROOT.war",
+                        into: "/usr/deploy/cinebook/ROOT.war"
+            }
+        }
+    }
+}
+
+tasks.register('dockerStartTomcat') {
+    doLast {
+        println 'begin dockerStartTomcat for CineBook'
+
+        ssh.run {
+            session(remotes.server) {
+                execute 'docker run -d ' +
+                        '--restart unless-stopped ' +
+                        '--name tomcat-cinebook ' +
+                        '-v /usr/deploy/cinebook:/usr/local/tomcat/webapps ' +
+                        '-p 8082:8080 ' +
+                        'tomcat:10.1'
+            }
+        }
+    }
+}
+
+tasks.register('dockerDeploy') {
+    dependsOn build
+    dependsOn dockerStopTomcat
+    dependsOn dockerUploadWar
+    dependsOn dockerStartTomcat
+
+    tasks.named('dockerStopTomcat').get().mustRunAfter build
+    tasks.named('dockerUploadWar').get().mustRunAfter dockerStopTomcat
+    tasks.named('dockerStartTomcat').get().mustRunAfter dockerUploadWar
+}
