@@ -66,8 +66,12 @@ public class PaymentController extends HttpServlet {
             return;
         }
 
-        int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-        String method = request.getParameter("paymentMethod");
+        Integer bookingId = parseBookingId(request.getParameter("bookingId"));
+
+        if (bookingId == null) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }        String method = request.getParameter("paymentMethod");
 
         PaymentInfo paymentInfo = paymentService.getPaymentInfo(bookingId);
 
@@ -116,5 +120,15 @@ public class PaymentController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/home");
         }
     }
+    private Integer parseBookingId(String bookingIdParam) {
+        if (bookingIdParam == null || bookingIdParam.trim().isEmpty()) {
+            return null;
+        }
 
+        try {
+            return Integer.parseInt(bookingIdParam);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }
