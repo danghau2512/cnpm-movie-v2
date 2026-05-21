@@ -78,6 +78,11 @@ public class PaymentController extends HttpServlet {
         if (paymentInfo == null || paymentInfo.getUserId() != currentUser.getId()) {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
+
+        }
+        if (!"PAY_AT_COUNTER".equals(method) && !"VNPAY".equals(method)) {
+            response.sendRedirect(request.getContextPath() + "/payment?bookingId=" + bookingId);
+            return;
         }
 // UC07 - 7.2.6: Khách hàng chọn phương thức thanh toán tại quầy
 // UC07 - 7.2.7: Gọi service xử lý thanh toán tại quầy
