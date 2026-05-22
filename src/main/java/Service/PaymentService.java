@@ -18,9 +18,10 @@ public class PaymentService {
     }
     // UC07 - 7.2.7: Xử lý nghiệp vụ thanh toán tại quầy
     public void processPayAtCounter(int bookingId) {
+        PaymentInfo info = paymentDAO.findPaymentInfo(bookingId);
+        checkPayableBooking(info);
         paymentDAO.payAtCounter(bookingId);
     }
-
     public String createVnpayPaymentUrl(int bookingId, HttpServletRequest request) {
         // UC07 - 7.1.7: Lấy thông tin booking để chuẩn bị thanh toán VNPay Sandbox
         PaymentInfo info = paymentDAO.findPaymentInfo(bookingId);
@@ -28,6 +29,7 @@ public class PaymentService {
         if (info == null) {
             throw new RuntimeException("KhÃ´ng tÃ¬m tháº¥y thÃ´ng tin Ä‘áº·t vÃ©.");
         }
+        checkPayableBooking(info);
 // UC07 - 7.1.8: Tạo payment tạm thời với trạng thái PENDING trước khi chuyển sang VNPay
         paymentDAO.createVnpayPendingPayment(bookingId);
 // UC07 - 7.1.7: Tạo returnUrl để VNPay redirect kết quả về hệ thống
@@ -83,5 +85,16 @@ public class PaymentService {
         }
 
         return bookingId;
+    }
+    public boolean canPay(PaymentInfo info) {
+        return info != null
+                && "PENDING".equals(info.getBookingStatus())
+                && "UNPAID".equals(info.getPaymentStatus());
+    }
+
+    private void checkPayableBooking(PaymentInfo info) {
+        if (!canPay(info)) {
+            throw new IllegalStateException("Đơn đặt vé không còn ở trạng thái chờ thanh toán.");
+        }
     }
 }
