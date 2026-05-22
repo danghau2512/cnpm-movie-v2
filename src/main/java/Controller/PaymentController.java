@@ -41,6 +41,14 @@ public class PaymentController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
+        if (!paymentService.canPay(paymentInfo)) {
+            response.sendRedirect(request.getContextPath() + "/payment-result?bookingId=" + bookingId);
+            return;
+        }
+        if ("/payment".equals(path) && !paymentService.canPay(paymentInfo)) {
+            response.sendRedirect(request.getContextPath() + "/payment-result?bookingId=" + bookingId);
+            return;
+        }
 
         request.setAttribute("paymentInfo", paymentInfo);
 
