@@ -51,7 +51,13 @@ public class MovieController extends HttpServlet {
             return;
         }
 
-        int id = Integer.parseInt(idRaw);
+        int id;
+        try{
+            id = Integer.parseInt(idRaw);
+        } catch (NumberFormatException e){
+            response.sendRedirect(request.getContextPath() + "/movies");
+            return;
+        }
 
         Movie movie = movieService.getMovieDetail(id);
 
