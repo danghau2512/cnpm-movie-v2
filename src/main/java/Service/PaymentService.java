@@ -30,8 +30,7 @@ public class PaymentService {
             throw new RuntimeException("KhÃ´ng tÃ¬m tháº¥y thÃ´ng tin Ä‘áº·t vÃ©.");
         }
         checkPayableBooking(info);
-// UC07 - 7.1.8: Tạo payment tạm thời với trạng thái PENDING trước khi chuyển sang VNPay
-        paymentDAO.createVnpayPendingPayment(bookingId);
+
 // UC07 - 7.1.7: Tạo returnUrl để VNPay redirect kết quả về hệ thống
         String returnUrl = request.getScheme() + "://"
                 + request.getServerName()
@@ -44,6 +43,10 @@ public class PaymentService {
 
         long amount = totalAmount.longValue() * 100;
         String vnpTxnRef = bookingId + "_" + System.currentTimeMillis();
+        // UC07 - 7.1.8: Tạo payment tạm thời với trạng thái PENDING trước khi chuyển sang VNPay
+        paymentDAO.createVnpayPendingPayment(bookingId, vnpTxnRef);
+
+
         Map<String, String> params = new HashMap<>();
         params.put("vnp_Version", VnpayConfig.VNP_VERSION);
         params.put("vnp_Command", VnpayConfig.VNP_COMMAND);
@@ -73,11 +76,15 @@ public class PaymentService {
 // UC07 - 7.1.12: Nếu giao dịch thành công thì cập nhật payment SUCCESS và booking CONFIRMED
 // UC07 - 7.2.15: Nếu giao dịch thất bại thì cập nhật payment FAILED và booking CANCELLED
         String txnRef = params.get("vnp_TxnRef");
-        int bookingId = Integer.parseInt(txnRef.split("_")[0]);
-        String responseCode = params.get("vnp_ResponseCode");
-        String transactionStatus = params.get("vnp_TransactionStatus");
+        int bookingId = extractBookingIdFromTxnRef(txnRef);
+
+        String responseCode = params.getOrDefault("vnp_ResponseCode", "");
+        String transactionStatus = params.getOrDefault("vnp_TransactionStatus", "");
         String transactionCode = params.get("vnp_TransactionNo");
 
+        if (transactionCode == null || transactionCode.trim().isEmpty()) {
+            transactionCode = txnRef;
+        }
         if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
             paymentDAO.confirmVnpayPayment(bookingId, transactionCode);
         } else {
@@ -95,6 +102,17 @@ public class PaymentService {
     private void checkPayableBooking(PaymentInfo info) {
         if (!canPay(info)) {
             throw new IllegalStateException("Đơn đặt vé không còn ở trạng thái chờ thanh toán.");
+        }
+    }
+    private int extractBookingIdFromTxnRef(String txnRef) {
+        if (txnRef == null || txnRef.trim().isEmpty() || !txnRef.contains("_")) {
+            throw new RuntimeException("Mã giao dịch VNPay không hợp lệ.");
+        }
+
+        try {
+            return Integer.parseInt(txnRef.split("_")[0]);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Mã booking trong giao dịch VNPay không hợp lệ.");
         }
     }
 }

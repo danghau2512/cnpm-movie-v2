@@ -142,7 +142,7 @@ public class PaymentDAO {
 // UC07 - 7.1.8: Tạo payment mới với phương thức VNPAY và trạng thái PENDING
 
     // UC07 - 7.1.8: Cập nhật booking sang trạng thái PENDING và UNPAID
-    public void createVnpayPendingPayment(int bookingId) {
+    public void createVnpayPendingPayment(int bookingId, String vnpTxnRef) {
         jdbi.useTransaction(handle -> {
             java.math.BigDecimal amount = handle.createQuery("""
                         SELECT total_amount
@@ -161,13 +161,14 @@ public class PaymentDAO {
                     .execute();
 
             handle.createUpdate("""
-                        INSERT INTO payments
-                        (booking_id, payment_method, amount, payment_status, paid_at, transaction_code)
-                        VALUES
-                        (:bookingId, 'VNPAY', :amount, 'PENDING', NULL, NULL)
-                        """)
+            INSERT INTO payments
+            (booking_id, payment_method, amount, payment_status, paid_at, transaction_code)
+            VALUES
+            (:bookingId, 'VNPAY', :amount, 'PENDING', NULL, :vnpTxnRef)
+            """)
                     .bind("bookingId", bookingId)
                     .bind("amount", amount)
+                    .bind("vnpTxnRef", vnpTxnRef)
                     .execute();
 
             handle.createUpdate("""
