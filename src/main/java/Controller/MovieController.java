@@ -61,6 +61,7 @@ public class MovieController extends HttpServlet {
 
         Movie movie = movieService.getMovieDetail(id);
 
+        // UC04 - 4.1.7: Nếu phim không tồn tại hoặc không thuộc trạng thái được hiển thị thì quay về danh sách phim
         if (movie == null) {
             response.sendRedirect(request.getContextPath() + "/movies");
             return;

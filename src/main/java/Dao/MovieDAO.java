@@ -89,6 +89,8 @@ public class MovieDAO {
     }
 
     public Movie findById(int id) {
+        // UC04 - 4.1.5: MovieDAO truy vấn thông tin chi tiết phim theo id
+        // Chỉ lấy phim đang chiếu để tránh người dùng truy cập trực tiếp phim không hợp lệ
         String sql = """
             SELECT 
                 m.id,
@@ -111,7 +113,7 @@ public class MovieDAO {
                 JOIN genres g ON mg.genre_id = g.id
                 GROUP BY mg.movie_id
             ) gd ON m.id = gd.movie_id
-            WHERE m.id = :id
+            WHERE m.id = :id AND m.status = 'NOW_SHOWING'
             """;
 
         return jdbi.withHandle(handle ->
