@@ -30,8 +30,7 @@ public class PaymentService {
             throw new RuntimeException("KhÃ´ng tÃ¬m tháº¥y thÃ´ng tin Ä‘áº·t vÃ©.");
         }
         checkPayableBooking(info);
-// UC07 - 7.1.8: Tạo payment tạm thời với trạng thái PENDING trước khi chuyển sang VNPay
-        paymentDAO.createVnpayPendingPayment(bookingId);
+
 // UC07 - 7.1.7: Tạo returnUrl để VNPay redirect kết quả về hệ thống
         String returnUrl = request.getScheme() + "://"
                 + request.getServerName()
@@ -44,6 +43,10 @@ public class PaymentService {
 
         long amount = totalAmount.longValue() * 100;
         String vnpTxnRef = bookingId + "_" + System.currentTimeMillis();
+        // UC07 - 7.1.8: Tạo payment tạm thời với trạng thái PENDING trước khi chuyển sang VNPay
+        paymentDAO.createVnpayPendingPayment(bookingId);
+
+
         Map<String, String> params = new HashMap<>();
         params.put("vnp_Version", VnpayConfig.VNP_VERSION);
         params.put("vnp_Command", VnpayConfig.VNP_COMMAND);
