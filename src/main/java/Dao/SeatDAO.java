@@ -10,7 +10,6 @@ import java.util.List;
 public class SeatDAO {
     private final Jdbi jdbi = JdbiConnector.getJdbi();
 
-    //UC06 - 6.1.5: Truy vấn danh sách ghế và trạng thái ghế theo suất chiếu.
     public List<Seat> findSeatsByShowtimeId(int showtimeId) {
         String sql = """
             SELECT
