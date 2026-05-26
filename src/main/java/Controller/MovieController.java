@@ -31,12 +31,21 @@ public class MovieController extends HttpServlet {
             throws ServletException, IOException {
 
         String keyword = request.getParameter("keyword");
+        String detailMessage = request.getParameter("detailMessage");
 
+        // UC04 - A1/A2/A3/A7: Hiển thị thông báo khi người dùng truy cập chi tiết phim không hợp lệ
         List<Movie> movies = movieService.getMovies(keyword);
 
         request.setAttribute("movies", movies);
         request.setAttribute("keyword", keyword);
 
+        if ("missing_id".equals(detailMessage)) {
+            request.setAttribute("message", "Vui lòng chọn phim từ danh sách.");
+        } else if ("invalid_id".equals(detailMessage)) {
+            request.setAttribute("message", "Mã phim không hợp lệ.");
+        } else if ("movie_not_available".equals(detailMessage)) {
+            request.setAttribute("message", "Không tìm thấy phim hoặc phim không còn được hiển thị.");
+        }
         request.getRequestDispatcher("/movies.jsp")
                 .forward(request, response);
     }
@@ -47,7 +56,8 @@ public class MovieController extends HttpServlet {
         String idRaw = request.getParameter("id");
 
         if (idRaw == null || idRaw.trim().isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/movies");
+            // UC04 - A1: Thiếu id phim thì quay về danh sách và hiển thị thông báo
+            response.sendRedirect(request.getContextPath() + "/movies?detailMessage=missing_id");
             return;
         }
 
@@ -55,7 +65,8 @@ public class MovieController extends HttpServlet {
         try{
             id = Integer.parseInt(idRaw);
         } catch (NumberFormatException e){
-            response.sendRedirect(request.getContextPath() + "/movies");
+            // UC04 - A2: id không hợp lệ thì quay về danh sách và hiển thị thông báo
+            response.sendRedirect(request.getContextPath() + "/movies?detailMessage=invalid_id");
             return;
         }
 
@@ -63,7 +74,8 @@ public class MovieController extends HttpServlet {
 
         // UC04 - 4.1.7: Nếu phim không tồn tại hoặc không thuộc trạng thái được hiển thị thì quay về danh sách phim
         if (movie == null) {
-            response.sendRedirect(request.getContextPath() + "/movies");
+            // UC04 - 4.1.7 + A3/A7: Phim không tồn tại hoặc không được hiển thị
+            response.sendRedirect(request.getContextPath() + "/movies?detailMessage=movie_not_available");
             return;
         }
 
