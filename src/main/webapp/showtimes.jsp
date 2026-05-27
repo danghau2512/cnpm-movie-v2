@@ -107,16 +107,13 @@
 
     <section class="showtime-table">
         <c:choose>
-            <!-- UC05 - 4.8.9: Kiểm tra danh sách lịch chiếu trả về có rỗng hay không -->
             <c:when test="${empty showtimes}">
-                <!-- UC05 - 4.8.10: Hiển thị thông báo khi không có lịch chiếu phù hợp -->
                 <div class="empty-showtime">
                     Hiện chưa có lịch chiếu phù hợp.
                 </div>
             </c:when>
 
             <c:otherwise>
-                <!-- UC05 - 4.7.12: Hiển thị danh sách lịch chiếu cho khách hàng -->
                 <c:forEach var="item" items="${showtimes}">
                     <div class="showtime-card">
                         <div>
@@ -143,7 +140,6 @@
                             <span>Trạng thái</span>
                             <small>Còn vé</small>
                         </div>
-                        <!-- UC05 - 4.7.12: Khách hàng bấm Đặt vé để chuyển sang use case Đặt vé -->
                         <a class="btn btn-primary"
                            href="${pageContext.request.contextPath}/booking?showtimeId=${item.id}">
                             Đặt vé
