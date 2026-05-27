@@ -8,8 +8,15 @@ import java.util.List;
 public class BookingDAO {
     private final Jdbi jdbi = JdbiConnector.getJdbi();
 
+    /**
+     * UC06 - Đặt vé
+     * Tạo đơn đặt vé và lưu danh sách ghế khách hàng đã chọn.
+     */
     public int createBooking(int userId, int showtimeId, List<Integer> seatIds) {
+        // UC06 - 6.1.17: BookingService gọi BookingDAO.createBooking(userId, showtimeId, seatIds)
         return jdbi.inTransaction(handle -> {
+
+            // UC06 - 6.1.18: BookingDAO kiểm tra suất chiếu có tồn tại và đang OPEN hay không
             Long price = handle.createQuery("""
                             SELECT price
                             FROM showtimes
@@ -22,9 +29,11 @@ public class BookingDAO {
                     .orElse(null);
 
             if (price == null) {
-
+                // UC06 - 6.1.6A.1: Suất chiếu không tồn tại hoặc không còn hợp lệ
                 throw new RuntimeException("Suất chiếu không hợp lệ hoặc đã đóng.");
             }
+
+            // UC06 - 6.1.19: Kiểm tra các ghế được chọn có thuộc đúng phòng chiếu của suất chiếu hay không
             Integer validSeatCount = handle.createQuery("""
                             SELECT COUNT(*)
                             FROM seats se
@@ -38,36 +47,42 @@ public class BookingDAO {
                     .one();
 
             if (validSeatCount == null || validSeatCount != seatIds.size()) {
-                throw new RuntimeException("Ghế không thuộc phòng chiếu của suất chiếu này.");
+                // UC06 - 6.1.19A.1: Dữ liệu ghế không hợp lệ hoặc ghế không thuộc phòng chiếu
+                throw new RuntimeException("Danh sách ghế không hợp lệ cho suất chiếu này.");
             }
 
+            // UC06 - 6.1.19: Kiểm tra các ghế đã chọn có đang nằm trong booking PENDING hoặc CONFIRMED hay không
             Integer bookedCount = handle.createQuery("""
-                SELECT COUNT(*)
-                FROM booking_seats bs
-                JOIN bookings b ON bs.booking_id = b.id
-                WHERE bs.showtime_id = :showtimeId
-                AND bs.seat_id IN (<seatIds>)
-                AND b.booking_status IN ('PENDING', 'CONFIRMED')
-                """)
+                            SELECT COUNT(*)
+                            FROM booking_seats bs
+                            JOIN bookings b ON bs.booking_id = b.id
+                            WHERE bs.showtime_id = :showtimeId
+                            AND bs.seat_id IN (<seatIds>)
+                            AND b.booking_status IN ('PENDING', 'CONFIRMED')
+                            """)
                     .bind("showtimeId", showtimeId)
                     .bindList("seatIds", seatIds)
                     .mapTo(Integer.class)
                     .one();
 
             if (bookedCount != null && bookedCount > 0) {
+                // UC06 - 6.1.19A.1: Ghế đã được đặt bởi người khác
                 throw new RuntimeException("Một hoặc nhiều ghế đã được đặt. Vui lòng chọn ghế khác.");
             }
+
             String bookingCode = "BK" + System.currentTimeMillis();
             int quantity = seatIds.size();
             long totalAmount = price * quantity;
+
+            // UC06 - 6.1.20: BookingDAO insertBooking(...) để tạo đơn đặt vé trong bảng bookings
             int bookingId = handle.createUpdate("""
-                INSERT INTO bookings
-                (user_id, showtime_id, booking_code, quantity, total_amount,
-                 booking_status, payment_status)
-                VALUES
-                (:userId, :showtimeId, :bookingCode, :quantity, :totalAmount,
-                 'PENDING', 'UNPAID')
-                """)
+                            INSERT INTO bookings
+                            (user_id, showtime_id, booking_code, quantity, total_amount,
+                             booking_status, payment_status)
+                            VALUES
+                            (:userId, :showtimeId, :bookingCode, :quantity, :totalAmount,
+                             'PENDING', 'UNPAID')
+                            """)
                     .bind("userId", userId)
                     .bind("showtimeId", showtimeId)
                     .bind("bookingCode", bookingCode)
@@ -77,6 +92,7 @@ public class BookingDAO {
                     .mapTo(Integer.class)
                     .one();
 
+            // UC06 - 6.1.21: BookingDAO insertBookingSeats(...) để lưu danh sách ghế đã chọn
             for (Integer seatId : seatIds) {
                 handle.createUpdate("""
                                 INSERT INTO booking_seats
@@ -91,9 +107,11 @@ public class BookingDAO {
                         .execute();
             }
 
+            // UC06 - 6.1.22: BookingDAO trả về bookingId cho BookingService
             return bookingId;
         });
     }
+
     public void confirmBooking(int bookingId) {
         String sql = """
             UPDATE bookings
@@ -108,6 +126,7 @@ public class BookingDAO {
                         .execute()
         );
     }
+
     public void cancelBooking(int bookingId) {
         String sql = """
             UPDATE bookings
