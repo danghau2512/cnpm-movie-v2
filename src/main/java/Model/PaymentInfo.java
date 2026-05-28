@@ -101,9 +101,7 @@ public class PaymentInfo {
         this.totalAmount = totalAmount;
     }
 
-    public String getTotalText() {
-        return totalText;
-    }
+
 
     public void setTotalText(String totalText) {
         this.totalText = totalText;

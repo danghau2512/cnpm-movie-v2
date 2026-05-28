@@ -159,7 +159,20 @@
 
                 <div class="summary-row">
                     <span>Tổng tiền</span>
-                    <strong class="total-money">${paymentInfo.totalText} VNĐ</strong>
+                    <strong class="total-money">${paymentInfo.totalText}</strong>
+                </div>
+                <div class="info-row">
+                    <span>Trạng thái đặt vé</span>
+                    <strong class="status-badge ${paymentInfo.bookingStatusClass}">
+                        ${paymentInfo.bookingStatusText}
+                    </strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Trạng thái thanh toán</span>
+                    <strong class="status-badge ${paymentInfo.paymentStatusClass}">
+                        ${paymentInfo.paymentStatusText}
+                    </strong>
                 </div>
             </aside>
         </div>
