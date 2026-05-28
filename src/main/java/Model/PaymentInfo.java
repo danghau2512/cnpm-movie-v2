@@ -1,7 +1,8 @@
 package Model;
 
 import java.math.BigDecimal;
-
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 public class PaymentInfo {
     private int bookingId;
     private int userId;
@@ -122,5 +123,80 @@ public class PaymentInfo {
 
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+    public String getTotalText() {
+        if (totalAmount == null) {
+            return "0 VNĐ";
+        }
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
+        return formatter.format(totalAmount) + " VNĐ";
+    }
+
+    public String getBookingStatusText() {
+        if ("PENDING".equals(bookingStatus)) {
+            return "Chờ thanh toán";
+        }
+
+        if ("CONFIRMED".equals(bookingStatus)) {
+            return "Đã xác nhận";
+        }
+
+        if ("CANCELLED".equals(bookingStatus)) {
+            return "Đã hủy";
+        }
+
+        return bookingStatus;
+    }
+
+    public String getPaymentStatusText() {
+        if ("UNPAID".equals(paymentStatus)) {
+            return "Chưa thanh toán";
+        }
+
+        if ("PAID".equals(paymentStatus)) {
+            return "Đã thanh toán";
+        }
+
+        if ("FAILED".equals(paymentStatus)) {
+            return "Thanh toán thất bại";
+        }
+
+        return paymentStatus;
+    }
+
+    public String getBookingStatusClass() {
+        if ("PENDING".equals(bookingStatus)) {
+            return "status-pending";
+        }
+
+        if ("CONFIRMED".equals(bookingStatus)) {
+            return "status-success";
+        }
+
+        if ("CANCELLED".equals(bookingStatus)) {
+            return "status-cancelled";
+        }
+
+        return "status-default";
+    }
+
+    public String getPaymentStatusClass() {
+        if ("UNPAID".equals(paymentStatus)) {
+            return "status-pending";
+        }
+
+        if ("PAID".equals(paymentStatus)) {
+            return "status-success";
+        }
+
+        if ("FAILED".equals(paymentStatus)) {
+            return "status-cancelled";
+        }
+
+        return "status-default";
     }
 }
