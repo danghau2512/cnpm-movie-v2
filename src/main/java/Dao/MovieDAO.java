@@ -46,9 +46,10 @@ public class MovieDAO {
     }
 
     public List<Movie> findMoviesByKeyword(String keyword) {
-        // UC03 - 3.1.7: Tạo câu truy vấn tìm phim đang chiếu theo tên phim hoặc thể loại
+        // UC03 - 3.1.7: Tìm phim theo tên hoặc thể loại, bao gồm cả COMING_SOON
+        // Cải tiến: không phân biệt hoa thường (LOWER), ưu tiên kết quả khớp tên hơn thể loại
         String sql = """
-            SELECT 
+            SELECT
                 m.id,
                 m.title,
                 m.duration_minutes AS durationMinutes,
@@ -62,28 +63,34 @@ public class MovieDAO {
                 COALESCE(gd.genreNames, 'Chưa phân loại') AS genreNames
             FROM movies m
             LEFT JOIN (
-                SELECT 
+                SELECT
                     mg.movie_id,
                     GROUP_CONCAT(g.name ORDER BY g.name SEPARATOR ', ') AS genreNames
                 FROM movie_genres mg
                 JOIN genres g ON mg.genre_id = g.id
                 GROUP BY mg.movie_id
             ) gd ON m.id = gd.movie_id
-            WHERE m.status = 'NOW_SHOWING'
+            WHERE m.status IN ('NOW_SHOWING', 'COMING_SOON')
             AND (
-                m.title LIKE :keyword
-                OR gd.genreNames LIKE :keyword
+                LOWER(m.title) LIKE LOWER(:keyword)
+                OR LOWER(COALESCE(gd.genreNames, '')) LIKE LOWER(:keyword)
             )
-            ORDER BY m.id DESC
+            ORDER BY
+                CASE
+                    WHEN LOWER(m.title) LIKE LOWER(:kwStart) THEN 1
+                    WHEN LOWER(m.title) LIKE LOWER(:kwContain) THEN 2
+                    ELSE 3
+                END,
+                m.release_date DESC
             """;
 
         return jdbi.withHandle(handle ->
-                // UC03 - 3.1.7: Bind keyword bằng tham số để tránh nối chuỗi SQL trực tiếp
                 handle.createQuery(sql)
                         .bind("keyword", "%" + keyword + "%")
+                        .bind("kwStart", keyword + "%")
+                        .bind("kwContain", "%" + keyword + "%")
                         .registerRowMapper(BeanMapper.factory(Movie.class))
                         .mapTo(Movie.class)
-                        // UC03 - 3.1.8: Nhận danh sách phim từ Database và map sang List<Movie>
                         .list()
         );
     }
