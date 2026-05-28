@@ -78,6 +78,29 @@
         min-width: 0;
     }
 
+    .status-badge {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .status-badge.now-showing {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4caf50;
+        border: 1px solid #4caf50;
+    }
+
+    .status-badge.coming-soon {
+        background: rgba(240, 184, 74, 0.2);
+        color: var(--gold-soft);
+        border: 1px solid var(--gold-soft);
+    }
+
     @media (max-width: 700px) {
         .page-title {
             grid-template-columns: 1fr;
@@ -132,7 +155,7 @@
             <c:otherwise>
                 <%-- UC03 - 3.1.12: Duyệt danh sách phim phù hợp và hiển thị lên giao diện --%>
                 <c:forEach var="movie" items="${movies}">
-                    <div class="movie-card" data-movie-card data-genre="${movie.genreNames}" data-rating="${movie.ageRating}">
+                    <div class="movie-card" data-movie-card data-genre="${movie.genreNames}" data-rating="${movie.ageRating}" data-status="${movie.status}">
                         <div class="movie-poster">
                             <span class="age-tag">${movie.ageRating}</span>
 
@@ -149,16 +172,20 @@
                             </c:choose>
                         </div>
                         <div class="movie-info">
+                            <c:choose>
+                                <c:when test="${movie.status == 'NOW_SHOWING'}">
+                                    <span class="status-badge now-showing">Đang chiếu</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="status-badge coming-soon">Sắp chiếu</span>
+                                </c:otherwise>
+                            </c:choose>
+
                             <h3>${movie.title}</h3>
 
-                            <p>
-                                Thời lượng: ${movie.durationMinutes} phút
-                            </p>
-
-                            <p>
-                                Độ tuổi: ${movie.ageRating}
-                            </p>
-                            <p>Thể loại : ${movie.genreNames}</p>
+                            <p>Thời lượng: ${movie.durationMinutes} phút</p>
+                            <p>Độ tuổi: ${movie.ageRating}</p>
+                            <p>Thể loại: ${movie.genreNames}</p>
 
                             <div class="movie-actions">
                                 <a class="btn btn-ghost"
@@ -166,10 +193,19 @@
                                     Chi tiết
                                 </a>
 
-                                <a class="btn btn-primary"
-                                   href="${pageContext.request.contextPath}/showtimes?movieId=${movie.id}">
-                                    Đặt vé
-                                </a>
+                                <c:choose>
+                                    <c:when test="${movie.status == 'NOW_SHOWING'}">
+                                        <a class="btn btn-primary"
+                                           href="${pageContext.request.contextPath}/showtimes?movieId=${movie.id}">
+                                            Đặt vé
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class="btn btn-primary" disabled style="opacity:0.4;cursor:not-allowed;">
+                                            Sắp chiếu
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>
