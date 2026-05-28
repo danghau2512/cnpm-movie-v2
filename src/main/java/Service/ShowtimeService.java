@@ -12,15 +12,24 @@ public class ShowtimeService {
     public List<Showtime> getShowtimes(String movieIdRaw) {
 
         // UC05 - 4.8.1: Trường hợp không có movieId hoặc movieId rỗng
-        // UC05 - 4.7.6: Gọi DAO lấy tất cả suất chiếu đang mở
         if (movieIdRaw == null || movieIdRaw.trim().isEmpty()) {
             return showtimeDAO.findAllOpen();
         }
 
-        // UC05 - 4.8.5: Trường hợp có movieId từ request
-        int movieId = Integer.parseInt(movieIdRaw);
+        try {
+            int movieId = Integer.parseInt(movieIdRaw.trim());
 
-        // UC05 - 4.7.7: Gọi DAO lấy lịch chiếu theo phim được chọn
-        return showtimeDAO.findByMovieId(movieId);
+            // Trường hợp movieId không hợp lệ như 0 hoặc số âm thì hiển thị tất cả lịch chiếu
+            if (movieId <= 0) {
+                return showtimeDAO.findAllOpen();
+            }
+
+            // UC05 - 4.7.7: Gọi DAO lấy lịch chiếu theo phim được chọn
+            return showtimeDAO.findByMovieId(movieId);
+
+        } catch (NumberFormatException e) {
+            // Tránh lỗi khi người dùng sửa URL thành /showtimes?movieId=abc
+            return showtimeDAO.findAllOpen();
+        }
     }
 }
