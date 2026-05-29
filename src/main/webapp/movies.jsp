@@ -194,6 +194,13 @@
                 <option value="">Tất cả độ tuổi</option>
             </select>
         </label>
+        <label>Trạng thái
+            <select id="statusFilter">
+                <option value="">Tất cả</option>
+                <option value="NOW_SHOWING">Đang chiếu</option>
+                <option value="COMING_SOON">Sắp chiếu</option>
+            </select>
+        </label>
     </section>
 
 
@@ -285,6 +292,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         var genreFilter = document.getElementById("genreFilter");
         var ratingFilter = document.getElementById("ratingFilter");
+        var statusFilter = document.getElementById("statusFilter");
         var movieCount = document.querySelector(".movie-count");
         var noFilteredMovies = document.getElementById("noFilteredMovies");
         var movieCards = Array.prototype.slice.call(document.querySelectorAll("[data-movie-card]"));
@@ -326,12 +334,14 @@
         function filterMovies() {
             var selectedGenre = genreFilter.value;
             var selectedRating = ratingFilter.value;
+            var selectedStatus = statusFilter ? statusFilter.value : "";
             var visibleCount = 0;
 
             movieCards.forEach(function (card) {
                 var matchesGenre = !selectedGenre || getGenres(card).indexOf(selectedGenre) !== -1;
                 var matchesRating = !selectedRating || card.dataset.rating === selectedRating;
-                var isVisible = matchesGenre && matchesRating;
+                var matchesStatus = !selectedStatus || card.dataset.status === selectedStatus;
+                var isVisible = matchesGenre && matchesRating && matchesStatus;
 
                 card.classList.toggle("hidden", !isVisible);
                 if (isVisible) {
@@ -347,6 +357,9 @@
 
         genreFilter.addEventListener("change", filterMovies);
         ratingFilter.addEventListener("change", filterMovies);
+        if (statusFilter) {
+            statusFilter.addEventListener("change", filterMovies);
+        }
     });
 </script>
 
