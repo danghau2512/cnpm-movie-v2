@@ -81,7 +81,7 @@
             border-color: var(--gold);
         }
 
-        .seat-item input:checked + span {
+        .seat-item.selected span {
             background: var(--gold);
             color: #211307;
             border-color: var(--gold);
@@ -165,6 +165,11 @@
             background: rgba(100, 23, 23, 0.25);
         }
 
+        .btn-full:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 1000px) {
             .booking-box {
                 grid-template-columns: 1fr;
@@ -203,10 +208,10 @@
     </c:if>
 
     <%--
-    UC06 - Đặt vé
-    UC06 - 6.1.6: Hiển thị giao diện chọn ghế cho khách hàng.
-    UC06 - 6.1.8: Khi khách hàng xác nhận, form gửi showtimeId và seatIds về BookingController.
---%>
+        UC06 - 6.1.10:
+        BookingController forward dữ liệu showtime và seats sang booking.jsp.
+        booking.jsp hiển thị thông tin suất chiếu và sơ đồ ghế cho khách hàng.
+    --%>
     <form action="${pageContext.request.contextPath}/booking" method="post" id="bookingForm">
         <input type="hidden" name="showtimeId" value="${showtime.id}">
 
@@ -224,7 +229,8 @@
 
                 <div class="seat-grid">
                     <%--
-                        UC06 - 6.1.7: Khách hàng chọn một hoặc nhiều ghế còn trống.
+                        UC06 - 6.1.11:
+                        Khách hàng chọn một hoặc nhiều ghế còn trống trên giao diện.
                         Ghế đã được đặt sẽ bị disabled và không thể chọn.
                     --%>
                     <c:forEach var="seat" items="${seats}">
@@ -286,7 +292,12 @@
                     <strong class="total-price" id="totalPrice">0 VNĐ</strong>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-full">
+                <%--
+                    UC06 - 6.1.13:
+                    Khách hàng bấm nút Xác nhận đặt vé.
+                    Nút sẽ được bật khi khách hàng đã chọn ít nhất một ghế.
+                --%>
+                <button type="submit" class="btn btn-primary btn-full" id="submitBookingBtn" disabled>
                     Xác nhận đặt vé
                 </button>
             </aside>
@@ -302,9 +313,24 @@
     const selectedSeatsEl = document.getElementById("selectedSeats");
     const seatCountEl = document.getElementById("seatCount");
     const totalPriceEl = document.getElementById("totalPrice");
+    const submitBookingBtn = document.getElementById("submitBookingBtn");
 
+    /**
+     * UC06 - 6.1.12:
+     * Giao diện cập nhật danh sách ghế đã chọn, số lượng vé và tổng tiền tạm tính.
+     */
     function updateSummary() {
         const selected = Array.from(seatInputs).filter(item => item.checked);
+
+        seatInputs.forEach(input => {
+            const seatLabel = input.closest(".seat-item");
+
+            if (input.checked) {
+                seatLabel.classList.add("selected");
+            } else {
+                seatLabel.classList.remove("selected");
+            }
+        });
 
         const seatCodes = selected.map(item => item.dataset.code);
         const count = selected.length;
@@ -318,12 +344,19 @@
         selectedSeatsEl.textContent = count > 0 ? seatCodes.join(", ") : "Chưa chọn";
         seatCountEl.textContent = count;
         totalPriceEl.textContent = total.toLocaleString("vi-VN") + " VNĐ";
+
+        submitBookingBtn.disabled = count === 0;
     }
 
     seatInputs.forEach(input => {
         input.addEventListener("change", updateSummary);
     });
 
+    /**
+     * UC06 - 6.1.14:
+     * booking.jsp gửi submitBooking(showtimeId, seatIds) đến BookingController.
+     * Nếu chưa chọn ghế thì chặn submit ở phía client.
+     */
     form.addEventListener("submit", function (event) {
         const selected = Array.from(seatInputs).filter(item => item.checked);
 
@@ -332,6 +365,8 @@
             alert("Vui lòng chọn ít nhất một ghế.");
         }
     });
+
+    updateSummary();
 </script>
 
 </body>
