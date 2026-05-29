@@ -39,6 +39,10 @@ public class MovieService {
         return keyword.trim().replaceAll("\\s+", " ");
     }
 
+    public List<String> getAllGenres() {
+        return movieDAO.findAllGenres();
+    }
+
     public Movie getMovieDetail(int id) {
         return movieDAO.findById(id);
     }
