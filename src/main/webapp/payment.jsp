@@ -132,17 +132,31 @@
             <section class="payment-box">
                 <h2>Chọn phương thức thanh toán</h2>
 
-                <label class="payment-method">
-                    <input type="radio" name="paymentMethod" value="VNPAY" checked>
-                    <span>Thanh toán VNPay</span>
-                    <p>Mô phỏng thanh toán online. Sau khi xác nhận, đơn sẽ được thanh toán thành công.</p>
-                </label>
+                <div class="payment-method-list">
+                    <label class="payment-method-card">
+                        <input type="radio" name="paymentMethod" value="VNPAY" checked>
 
-                <label class="payment-method">
-                    <input type="radio" name="paymentMethod" value="PAY_AT_COUNTER">
-                    <span>Thanh toán tại quầy</span>
-                    <p>Giữ ghế tạm thời. Khách hàng thanh toán khi đến rạp.</p>
-                </label>
+                        <div class="payment-method-content">
+                            <div class="payment-method-title">
+                                <span class="payment-dot"></span>
+                                <strong>Thanh toán VNPay</strong>
+                            </div>
+                            <p>Mô phỏng thanh toán online. Sau khi xác nhận, đơn sẽ được thanh toán thành công.</p>
+                        </div>
+                    </label>
+
+                    <label class="payment-method-card">
+                        <input type="radio" name="paymentMethod" value="PAY_AT_COUNTER">
+
+                        <div class="payment-method-content">
+                            <div class="payment-method-title">
+                                <span class="payment-dot"></span>
+                                <strong>Thanh toán tại quầy</strong>
+                            </div>
+                            <p>Giữ ghế tạm thời. Khách hàng thanh toán khi đến rạp.</p>
+                        </div>
+                    </label>
+                </div>
 
                 <button type="submit" class="btn btn-primary btn-full">
                     Xác nhận thanh toán
