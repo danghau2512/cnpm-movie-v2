@@ -103,6 +103,67 @@
             background: rgba(209, 213, 219, 0.12);
             border: 1px solid rgba(209, 213, 219, 0.35);
         }
+        .payment-method-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 16px;
+        }
+
+        .payment-method-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 20px 22px;
+            border: 1px solid rgba(245, 197, 66, 0.18);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.035);
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+        }
+
+        .payment-method-card:hover {
+            border-color: rgba(245, 197, 66, 0.55);
+            background: rgba(245, 197, 66, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .payment-method-card input[type="radio"] {
+            margin-top: 5px;
+            accent-color: #f5c542;
+        }
+
+        .payment-method-content {
+            flex: 1;
+        }
+
+        .payment-method-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .payment-method-title strong {
+            color: #f5c542;
+            font-size: 18px;
+            letter-spacing: 0.3px;
+        }
+
+        .payment-method-card p {
+            margin: 0;
+            color: #c7bfb5;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .payment-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #f5c542;
+            box-shadow: 0 0 12px rgba(245, 197, 66, 0.55);
+        }
 
         @media (max-width: 900px) {
             .payment-layout {
