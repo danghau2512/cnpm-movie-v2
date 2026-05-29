@@ -71,6 +71,38 @@
             font-size: 1.5rem;
             font-weight: 900;
         }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .status-pending {
+            color: #f5c542;
+            background: rgba(245, 197, 66, 0.12);
+            border: 1px solid rgba(245, 197, 66, 0.45);
+        }
+
+        .status-success {
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.45);
+        }
+
+        .status-cancelled {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+        }
+
+        .status-default {
+            color: #d1d5db;
+            background: rgba(209, 213, 219, 0.12);
+            border: 1px solid rgba(209, 213, 219, 0.35);
+        }
 
         @media (max-width: 900px) {
             .payment-layout {
@@ -155,12 +187,27 @@
                     <strong>${paymentInfo.quantity}</strong>
                 </div>
 
+                <div class="summary-row">
+                    <span>Trạng thái đặt vé</span>
+                    <strong class="status-badge ${paymentInfo.bookingStatusClass}">
+                        ${paymentInfo.bookingStatusText}
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Trạng thái thanh toán</span>
+                    <strong class="status-badge ${paymentInfo.paymentStatusClass}">
+                        ${paymentInfo.paymentStatusText}
+                    </strong>
+                </div>
                 <hr>
+
 
                 <div class="summary-row">
                     <span>Tổng tiền</span>
-                    <strong class="total-money">${paymentInfo.totalText} VNĐ</strong>
+                    <strong class="total-money">${paymentInfo.totalText}</strong>
                 </div>
+
             </aside>
         </div>
     </form>
