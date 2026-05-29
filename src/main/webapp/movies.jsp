@@ -150,10 +150,21 @@
     <section class="page-title">
         <%-- UC03 - 3.1.12: Hiển thị khu vực kết quả tìm kiếm phim cho khách hàng --%>
         <p class="eyebrow">UC03 - Tìm kiếm phim</p>
-        <h1>Tìm kiếm phim</h1>
-        <p class="muted">
-            Người dùng có thể tìm phim theo tên phim hoặc thể loại phim đang chiếu.
-        </p>
+
+        <c:choose>
+            <c:when test="${not empty keyword}">
+                <h1>Kết quả cho: &ldquo;${keyword}&rdquo;</h1>
+                <p class="muted">
+                    Tìm thấy <strong>${movies.size()}</strong> phim phù hợp.
+                </p>
+            </c:when>
+            <c:otherwise>
+                <h1>Danh sách phim</h1>
+                <p class="muted">
+                    Tìm phim theo tên hoặc thể loại. Đang hiển thị <strong>${movies.size()}</strong> phim.
+                </p>
+            </c:otherwise>
+        </c:choose>
 
         <c:if test="${not empty message}">
             <%-- UC03 - 3.2.1 + 3.2.3: Hiển thị thông báo khi keyword rỗng hoặc không tìm thấy phim --%>
