@@ -29,6 +29,7 @@ public class ShowtimeDAO {
                 JOIN movies m ON s.movie_id = m.id
                 JOIN rooms r ON s.room_id = r.id
                 WHERE s.status = 'OPEN'
+                AND s.start_time >= NOW()
                 ORDER BY s.start_time ASC
                 """;
 
@@ -61,6 +62,7 @@ public class ShowtimeDAO {
                 JOIN movies m ON s.movie_id = m.id
                 JOIN rooms r ON s.room_id = r.id
                 WHERE s.status = 'OPEN'
+                AND s.start_time >= NOW()
                 AND s.movie_id = :movieId
                 ORDER BY s.start_time ASC
                 """;
