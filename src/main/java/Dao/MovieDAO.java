@@ -95,6 +95,23 @@ public class MovieDAO {
         );
     }
 
+    public List<String> findAllGenres() {
+        String sql = """
+            SELECT DISTINCT g.name
+            FROM genres g
+            JOIN movie_genres mg ON g.id = mg.genre_id
+            JOIN movies m ON mg.movie_id = m.id
+            WHERE m.status IN ('NOW_SHOWING', 'COMING_SOON')
+            ORDER BY g.name
+            """;
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .mapTo(String.class)
+                        .list()
+        );
+    }
+
     public Movie findById(int id) {
         String sql = """
             SELECT 

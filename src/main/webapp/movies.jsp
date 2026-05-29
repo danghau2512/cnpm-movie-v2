@@ -101,6 +101,41 @@
         border: 1px solid var(--gold-soft);
     }
 
+    .genre-suggestions {
+        margin-top: 1rem;
+        padding: 1rem 1.2rem;
+        border: 1px dashed rgba(240, 184, 74, 0.4);
+        border-radius: 0.75rem;
+        background: rgba(240, 184, 74, 0.05);
+    }
+
+    .genre-suggestions p {
+        color: var(--muted);
+        margin-bottom: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .genre-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .genre-tag {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(240, 184, 74, 0.6);
+        color: var(--gold-soft);
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .genre-tag:hover {
+        background: rgba(240, 184, 74, 0.15);
+    }
+
     @media (max-width: 700px) {
         .page-title {
             grid-template-columns: 1fr;
@@ -123,6 +158,20 @@
         <c:if test="${not empty message}">
             <%-- UC03 - 3.2.1 + 3.2.3: Hiển thị thông báo khi keyword rỗng hoặc không tìm thấy phim --%>
             <p class="empty-message">${message}</p>
+
+            <c:if test="${not empty suggestedGenres}">
+                <div class="genre-suggestions">
+                    <p>Bạn có thể thử tìm theo thể loại phổ biến:</p>
+                    <div class="genre-tags">
+                        <c:forEach var="genre" items="${suggestedGenres}">
+                            <a class="genre-tag"
+                               href="${pageContext.request.contextPath}/search?keyword=${genre}">
+                                ${genre}
+                            </a>
+                        </c:forEach>
+                    </div>
+                </div>
+            </c:if>
         </c:if>
         <label>Thể loại
             <select id="genreFilter">
