@@ -40,31 +40,7 @@
             text-align: right;
         }
 
-        .payment-method {
-            display: block;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--line);
-            border-radius: 0.65rem;
-            background: rgba(255,255,255,0.04);
-            cursor: pointer;
-        }
 
-        .payment-method input {
-            width: auto;
-            min-height: auto;
-            margin-right: 0.6rem;
-        }
-
-        .payment-method span {
-            font-weight: 800;
-            color: var(--gold-soft);
-        }
-
-        .payment-method p {
-            margin: 0.5rem 0 0 1.7rem;
-            color: var(--muted);
-        }
 
         .total-money {
             color: var(--gold);
@@ -103,24 +79,8 @@
             background: rgba(209, 213, 219, 0.12);
             border: 1px solid rgba(209, 213, 219, 0.35);
         }
-        .payment-method-list {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            margin-top: 16px;
-        }
 
-        .payment-method-card {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 20px 22px;
-            border: 1px solid rgba(245, 197, 66, 0.18);
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.035);
-            cursor: pointer;
-            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-        }
+
 
         .payment-method-card:hover {
             border-color: rgba(245, 197, 66, 0.55);
@@ -128,10 +88,6 @@
             transform: translateY(-1px);
         }
 
-        .payment-method-card input[type="radio"] {
-            margin-top: 5px;
-            accent-color: #f5c542;
-        }
 
         .payment-method-content {
             flex: 1;
@@ -156,13 +112,72 @@
             line-height: 1.6;
             font-size: 15px;
         }
+        .payment-method-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 18px;
+            margin-bottom: 22px;
+        }
+
+        .payment-method-card {
+            position: relative;
+            display: block;
+            padding: 20px 22px 20px 58px;
+            border: 1px solid rgba(245, 197, 66, 0.22);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.035);
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+        }
+
+        .payment-method-card:hover {
+            border-color: rgba(245, 197, 66, 0.6);
+            background: rgba(245, 197, 66, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .payment-method-card input[type="radio"] {
+            position: absolute;
+            left: 22px;
+            top: 24px;
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            min-height: 18px !important;
+            margin: 0;
+            padding: 0;
+            accent-color: #f5c542;
+            cursor: pointer;
+        }
+
+        .payment-method-content {
+            width: 100%;
+        }
+
+        .payment-method-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .payment-method-title strong {
+            color: #f5c542;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .payment-method-card p {
+            margin: 0;
+            color: #c7bfb5;
+            line-height: 1.6;
+            font-size: 15px;
+        }
 
         .payment-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #f5c542;
-            box-shadow: 0 0 12px rgba(245, 197, 66, 0.55);
+            display: none;
         }
 
         @media (max-width: 900px) {
