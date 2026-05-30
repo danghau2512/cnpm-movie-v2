@@ -64,9 +64,8 @@ public class BookingController extends HttpServlet {
             // UC06 - 6.1.15: BookingController gọi BookingService.createBooking(userId, showtimeId, seatIds)
             int bookingId = bookingService.createBooking(currentUser.getId(), showtimeId, seatIds);
 
-            // UC06 - 6.1.23: BookingService trả về bookingId cho BookingController
-
-            // UC06 - 6.1.24: BookingController redirectToPayment(bookingId)
+            // UC06 - 6.1.24: BookingService trả về bookingId cho BookingController
+            // UC06 - 6.1.25: BookingController redirectToPayment(bookingId)
             response.sendRedirect(request.getContextPath() + "/payment?bookingId=" + bookingId);
 
         } catch (RuntimeException e) {

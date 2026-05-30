@@ -30,7 +30,14 @@ public class SeatDAO {
                         JOIN bookings b ON b.id = bs.booking_id
                         WHERE bs.showtime_id = st.id
                         AND bs.seat_id = se.id
-                        AND b.booking_status IN ('PENDING', 'CONFIRMED')
+                        AND (
+                                b.booking_status = 'CONFIRMED'
+                                OR (
+                                    b.booking_status = 'PENDING'
+                                    AND b.payment_status = 'UNPAID'
+                                    AND b.hold_expires_at > NOW()
+                                )
+                            )
                     )
                     THEN true
                     ELSE false
