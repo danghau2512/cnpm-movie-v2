@@ -12,7 +12,7 @@ public class ShowtimeDAO {
 
     // UC05 - 4.7.6: Lấy tất cả các suất chiếu đang mở khi khách hàng không chọn phim cụ thể
     // UC05 - 4.8.2: Truy vấn danh sách lịch chiếu trong trường hợp không có movieId
-    public List<Showtime> findAllOpen() {
+    public List<Showtime> findAllOpen(String showDate) {
         String sql = """
                 SELECT
                     s.id,
@@ -30,12 +30,14 @@ public class ShowtimeDAO {
                 JOIN rooms r ON s.room_id = r.id
                 WHERE s.status = 'OPEN'
                 AND s.start_time >= NOW()
+                AND (:showDate IS NULL OR DATE(s.start_time) = :showDate)
                 ORDER BY s.start_time ASC
                 """;
 
 // UC05 - 4.7.8: Truy vấn showtimes, movies, rooms và chỉ lấy suất chiếu có trạng thái OPEN(dòng 31)
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
+                        .bind("showDate", showDate)
                         .registerRowMapper(BeanMapper.factory(Showtime.class))
                         .mapTo(Showtime.class)
                         .list()
@@ -44,7 +46,7 @@ public class ShowtimeDAO {
 
     // UC05 - 4.7.7: Lấy danh sách suất chiếu của phim được chọn
     // UC05 - 4.8.6: Xử lý luồng thay thế khi request có movieId
-    public List<Showtime> findByMovieId(int movieId) {
+    public List<Showtime> findByMovieId(int movieId, String showDate) {
         // UC05 - 4.7.8: Truy vấn lịch chiếu theo phim và chỉ lấy suất chiếu đang mở
         String sql = """
                 SELECT
@@ -64,6 +66,7 @@ public class ShowtimeDAO {
                 WHERE s.status = 'OPEN'
                 AND s.start_time >= NOW()
                 AND s.movie_id = :movieId
+                AND (:showDate IS NULL OR DATE(s.start_time) = :showDate)
                 ORDER BY s.start_time ASC
                 """;
 
@@ -71,6 +74,7 @@ public class ShowtimeDAO {
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
                         .bind("movieId", movieId)
+                        .bind("showDate", showDate)
                         .registerRowMapper(BeanMapper.factory(Showtime.class))
                         .mapTo(Showtime.class)
                         .list()

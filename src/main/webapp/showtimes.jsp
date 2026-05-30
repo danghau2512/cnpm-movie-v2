@@ -27,6 +27,23 @@
             gap: 1rem;
         }
 
+        .showtime-filter {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .showtime-filter input[type="date"] {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--line);
+            border-radius: 0.6rem;
+            background: rgba(21, 21, 29, 0.88);
+            color: var(--text);
+            outline: none;
+        }
+
         .showtime-card {
             display: grid;
             grid-template-columns: 1.4fr 0.8fr 0.8fr 0.8fr 0.8fr auto;
@@ -148,6 +165,23 @@
                 </c:forEach>
             </c:otherwise>
         </c:choose>
+
+        <form method="get" action="${pageContext.request.contextPath}/showtimes" class="showtime-filter">
+            <c:if test="${not empty movieId}">
+                <input type="hidden" name="movieId" value="${movieId}">
+            </c:if>
+
+            <input type="date" name="showDate" value="${showDate}">
+
+            <button type="submit" class="btn btn-primary">
+                Lọc lịch chiếu
+            </button>
+
+            <a class="btn" href="${pageContext.request.contextPath}/showtimes">
+                Xóa lọc
+            </a>
+        </form>
+
     </section>
 </main>
 
