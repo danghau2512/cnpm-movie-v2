@@ -279,11 +279,32 @@
 </div>
 
 <script>
+    function convertYoutubeUrl(url) {
+        if (!url) {
+            return "";
+        }
+
+        if (url.includes("/embed/")) {
+            return url;
+        }
+
+        if (url.includes("watch?v=")) {
+            return url.replace("watch?v=", "embed/");
+        }
+
+        if (url.includes("youtu.be/")) {
+            return url.replace("youtu.be/", "www.youtube.com/embed/");
+        }
+
+        return url;
+    }
+
     function openTrailer(url) {
         const modal = document.getElementById("trailerModal");
         const frame = document.getElementById("trailerFrame");
 
-        frame.src = url + "?autoplay=1";
+        const embedUrl = convertYoutubeUrl(url);
+        frame.src = embedUrl + (embedUrl.includes("?") ? "&autoplay=1" : "?autoplay=1");
         modal.style.display = "flex";
     }
 
