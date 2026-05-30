@@ -22,12 +22,16 @@ public class ShowtimeController extends HttpServlet {
         // UC05 - 4.7.3: Lấy movieId từ request nếu khách hàng xem lịch chiếu theo phim
         String movieId = request.getParameter("movieId");
 
+        // Lấy ngày chiếu được người dùng chọn để lọc danh sách lịch chiếu
+        String showDate = request.getParameter("showDate");
+
         // UC05 - 4.7.4: Gọi service để lấy danh sách lịch chiếu phù hợp
-        List<Showtime> showtimes = showtimeService.getShowtimes(movieId);
+        List<Showtime> showtimes = showtimeService.getShowtimes(movieId, showDate);
 
         // UC05 - 4.7.10: Lưu danh sách lịch chiếu vào request để gửi sang JSP
         request.setAttribute("showtimes", showtimes);
         request.setAttribute("movieId", movieId);
+        request.setAttribute("showDate", showDate);
 
         // UC05 - 4.7.11: Chuyển tiếp sang trang showtimes.jsp để hiển thị lịch chiếu
         request.getRequestDispatcher("/showtimes.jsp")
