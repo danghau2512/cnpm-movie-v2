@@ -325,6 +325,11 @@
             }
         });
     });
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeTrailer();
+        }
+    });
 </script>
 </body>
 </html>
