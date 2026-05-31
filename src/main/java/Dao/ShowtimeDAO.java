@@ -11,8 +11,8 @@ public class ShowtimeDAO {
     private final Jdbi jdbi = JdbiConnector.getJdbi();
 
     // UC05 - 4.7.6: Lấy tất cả các suất chiếu đang mở khi khách hàng không chọn phim cụ thể
-    // UC05 - 4.8.2: Truy vấn danh sách lịch chiếu trong trường hợp không có movieId
-    public List<Showtime> findAllOpen(String showDate) {
+    // UC05 - Cải tiến: Cho phép lọc lịch chiếu theo ngày và thể loại phim
+    public List<Showtime> findAllOpen(String showDate, String genreName) {
         String sql = """
                 SELECT
                     s.id,
@@ -31,13 +31,24 @@ public class ShowtimeDAO {
                 WHERE s.status = 'OPEN'
                 AND s.start_time >= NOW()
                 AND (:showDate IS NULL OR DATE(s.start_time) = :showDate)
+                AND (
+                    :genreName IS NULL
+                    OR EXISTS (
+                        SELECT 1
+                        FROM movie_genres mg
+                        JOIN genres g ON mg.genre_id = g.id
+                        WHERE mg.movie_id = m.id
+                        AND g.name = :genreName
+                    )
+                )
                 ORDER BY s.start_time ASC
                 """;
 
-// UC05 - 4.7.8: Truy vấn showtimes, movies, rooms và chỉ lấy suất chiếu có trạng thái OPEN(dòng 31)
+        // UC05 - 4.7.8: Truy vấn showtimes, movies, rooms và chỉ lấy suất chiếu hợp lệ
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
                         .bind("showDate", showDate)
+                        .bind("genreName", genreName)
                         .registerRowMapper(BeanMapper.factory(Showtime.class))
                         .mapTo(Showtime.class)
                         .list()
@@ -45,9 +56,8 @@ public class ShowtimeDAO {
     }
 
     // UC05 - 4.7.7: Lấy danh sách suất chiếu của phim được chọn
-    // UC05 - 4.8.6: Xử lý luồng thay thế khi request có movieId
-    public List<Showtime> findByMovieId(int movieId, String showDate) {
-        // UC05 - 4.7.8: Truy vấn lịch chiếu theo phim và chỉ lấy suất chiếu đang mở
+    // UC05 - Cải tiến: Có thể kết hợp lọc theo ngày và thể loại phim
+    public List<Showtime> findByMovieId(int movieId, String showDate, String genreName) {
         String sql = """
                 SELECT
                     s.id,
@@ -67,6 +77,16 @@ public class ShowtimeDAO {
                 AND s.start_time >= NOW()
                 AND s.movie_id = :movieId
                 AND (:showDate IS NULL OR DATE(s.start_time) = :showDate)
+                AND (
+                    :genreName IS NULL
+                    OR EXISTS (
+                        SELECT 1
+                        FROM movie_genres mg
+                        JOIN genres g ON mg.genre_id = g.id
+                        WHERE mg.movie_id = m.id
+                        AND g.name = :genreName
+                    )
+                )
                 ORDER BY s.start_time ASC
                 """;
 
@@ -75,11 +95,13 @@ public class ShowtimeDAO {
                 handle.createQuery(sql)
                         .bind("movieId", movieId)
                         .bind("showDate", showDate)
+                        .bind("genreName", genreName)
                         .registerRowMapper(BeanMapper.factory(Showtime.class))
                         .mapTo(Showtime.class)
                         .list()
         );
     }
+
     // UC06 - 6.1.3: Truy vấn thông tin suất chiếu theo showtimeId.
     public Showtime findById(int showtimeId) {
         String sql = """

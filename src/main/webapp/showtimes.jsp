@@ -22,26 +22,31 @@
             margin-bottom: 0.8rem;
         }
 
-        .showtime-table {
-            display: grid;
-            gap: 1rem;
-        }
-
         .showtime-filter {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            margin-top: 1.5rem;
+            margin: 1.5rem 0 2rem;
             flex-wrap: wrap;
         }
 
-        .showtime-filter input[type="date"] {
+        .showtime-filter input[type="date"],
+        .showtime-filter select {
             padding: 0.75rem 1rem;
             border: 1px solid var(--line);
             border-radius: 0.6rem;
             background: rgba(21, 21, 29, 0.88);
             color: var(--text);
             outline: none;
+        }
+
+        .showtime-filter select {
+            min-width: 190px;
+        }
+
+        .showtime-table {
+            display: grid;
+            gap: 1rem;
         }
 
         .showtime-card {
@@ -90,6 +95,18 @@
         }
 
         @media (max-width: 600px) {
+            .showtime-filter {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .showtime-filter select,
+            .showtime-filter input[type="date"],
+            .showtime-filter button,
+            .showtime-filter a {
+                width: 100%;
+            }
+
             .showtime-card {
                 grid-template-columns: 1fr;
             }
@@ -121,6 +138,36 @@
             </c:otherwise>
         </c:choose>
     </section>
+
+    <form method="get" action="${pageContext.request.contextPath}/showtimes" class="showtime-filter">
+        <select name="movieId">
+            <option value="">Tất cả phim</option>
+            <c:forEach var="movie" items="${movies}">
+                <option value="${movie.id}" ${movieId == movie.id ? 'selected="selected"' : ''}>
+                    ${movie.title}
+                </option>
+            </c:forEach>
+        </select>
+
+        <select name="genreName">
+            <option value="">Tất cả thể loại</option>
+            <c:forEach var="genre" items="${genres}">
+                <option value="${genre}" ${genreName == genre ? 'selected="selected"' : ''}>
+                    ${genre}
+                </option>
+            </c:forEach>
+        </select>
+
+        <input type="date" name="showDate" value="${showDate}">
+
+        <button type="submit" class="btn btn-primary">
+            Lọc lịch chiếu
+        </button>
+
+        <a class="btn" href="${pageContext.request.contextPath}/showtimes">
+            Xóa lọc
+        </a>
+    </form>
 
     <section class="showtime-table">
         <c:choose>
@@ -157,6 +204,7 @@
                             <span>Trạng thái</span>
                             <small>Còn vé</small>
                         </div>
+
                         <a class="btn btn-primary"
                            href="${pageContext.request.contextPath}/booking?showtimeId=${item.id}">
                             Đặt vé
@@ -165,23 +213,6 @@
                 </c:forEach>
             </c:otherwise>
         </c:choose>
-
-        <form method="get" action="${pageContext.request.contextPath}/showtimes" class="showtime-filter">
-            <c:if test="${not empty movieId}">
-                <input type="hidden" name="movieId" value="${movieId}">
-            </c:if>
-
-            <input type="date" name="showDate" value="${showDate}">
-
-            <button type="submit" class="btn btn-primary">
-                Lọc lịch chiếu
-            </button>
-
-            <a class="btn" href="${pageContext.request.contextPath}/showtimes">
-                Xóa lọc
-            </a>
-        </form>
-
     </section>
 </main>
 
