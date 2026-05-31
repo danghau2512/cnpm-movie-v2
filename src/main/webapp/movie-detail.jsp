@@ -254,10 +254,20 @@
                     </button>
                 </c:if>
 
-                <a class="btn btn-ghost"
-                   href="${pageContext.request.contextPath}/movies">
-                    Quay lại danh sách
-                </a>
+                <c:choose>
+                    <c:when test="${not empty keyword}">
+                        <a class="btn btn-ghost"
+                           href="${pageContext.request.contextPath}/movies?keyword=${keyword}">
+                            Quay lại danh sách
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-ghost"
+                           href="${pageContext.request.contextPath}/movies">
+                            Quay lại danh sách
+                        </a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </section>

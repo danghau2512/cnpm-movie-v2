@@ -162,7 +162,7 @@
 
                             <div class="movie-actions">
                                 <a class="btn btn-ghost"
-                                   href="${pageContext.request.contextPath}/movie-detail?id=${movie.id}">
+                                   href="${pageContext.request.contextPath}/movie-detail?id=${movie.id}&keyword=${keyword}">
                                     Chi tiết
                                 </a>
 
