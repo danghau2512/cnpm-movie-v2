@@ -254,10 +254,20 @@
                     </button>
                 </c:if>
 
-                <a class="btn btn-ghost"
-                   href="${pageContext.request.contextPath}/movies">
-                    Quay lại danh sách
-                </a>
+                <c:choose>
+                    <c:when test="${not empty keyword}">
+                        <a class="btn btn-ghost"
+                           href="${pageContext.request.contextPath}/movies?keyword=${keyword}">
+                            Quay lại danh sách
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-ghost"
+                           href="${pageContext.request.contextPath}/movies">
+                            Quay lại danh sách
+                        </a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </section>
@@ -279,11 +289,32 @@
 </div>
 
 <script>
+    function convertYoutubeUrl(url) {
+        if (!url) {
+            return "";
+        }
+
+        if (url.includes("/embed/")) {
+            return url;
+        }
+
+        if (url.includes("watch?v=")) {
+            return url.replace("watch?v=", "embed/");
+        }
+
+        if (url.includes("youtu.be/")) {
+            return url.replace("youtu.be/", "www.youtube.com/embed/");
+        }
+
+        return url;
+    }
+
     function openTrailer(url) {
         const modal = document.getElementById("trailerModal");
         const frame = document.getElementById("trailerFrame");
 
-        frame.src = url + "?autoplay=1";
+        const embedUrl = convertYoutubeUrl(url);
+        frame.src = embedUrl + (embedUrl.includes("?") ? "&autoplay=1" : "?autoplay=1");
         modal.style.display = "flex";
     }
 
@@ -303,6 +334,11 @@
                 closeTrailer();
             }
         });
+    });
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeTrailer();
+        }
     });
 </script>
 </body>

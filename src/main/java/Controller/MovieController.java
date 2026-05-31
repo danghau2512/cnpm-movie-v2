@@ -54,6 +54,7 @@ public class MovieController extends HttpServlet {
             throws ServletException, IOException {
 
         String idRaw = request.getParameter("id");
+        String keyword = request.getParameter("keyword");
 
         if (idRaw == null || idRaw.trim().isEmpty()) {
             // UC04 - A1: Thiếu id phim thì quay về danh sách và hiển thị thông báo
@@ -80,6 +81,7 @@ public class MovieController extends HttpServlet {
         }
 
         request.setAttribute("movie", movie);
+        request.setAttribute("keyword", keyword);
 
         request.getRequestDispatcher("/movie-detail.jsp")
                 .forward(request, response);
