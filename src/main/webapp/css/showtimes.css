@@ -74,203 +74,18 @@
     border-color: var(--gold-soft);
 }
 
-.showtime-table {
-    display: grid;
-    gap: 1rem;
-}
-
-.showtime-card {
-    display: grid;
-    grid-template-columns: 1.4fr 0.8fr 0.8fr 0.8fr 0.8fr auto;
-    gap: 1rem;
-    align-items: center;
-    padding: 1.2rem;
+.showtime-result-summary {
+    margin: -0.4rem 0 1.2rem;
+    padding: 0.85rem 1rem;
     border: 1px solid var(--line);
-    border-radius: 1rem;
-    background: rgba(21, 21, 29, 0.9);
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.showtime-card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(240, 184, 74, 0.55);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
-}
-
-.showtime-movie h3 {
-    margin: 0 0 0.35rem;
-    font-size: 1.15rem;
-    color: var(--text);
-}
-
-.showtime-movie p {
-    margin: 0;
-    color: var(--muted);
-}
-
-.showtime-info span {
-    display: block;
-    color: var(--gold-soft);
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-    font-size: 0.9rem;
-}
-
-.showtime-info small {
-    color: var(--muted);
-    font-size: 0.95rem;
-}
-
-.status-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.35rem 0.7rem;
-    border-radius: 999px;
-    color: var(--gold-soft);
-    background: rgba(240, 184, 74, 0.12);
-    border: 1px solid rgba(240, 184, 74, 0.32);
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-
-.empty-showtime {
-    padding: 2.5rem 1.5rem;
-    border: 1px dashed rgba(240, 184, 74, 0.55);
-    border-radius: 1rem;
+    border-radius: 0.8rem;
     background: rgba(21, 21, 29, 0.72);
-    text-align: center;
-}
-
-.empty-showtime h3 {
-    margin: 0 0 0.7rem;
-    color: var(--gold-soft);
-    font-size: 1.4rem;
-}
-
-.empty-showtime p {
-    margin: 0 auto 1.2rem;
-    max-width: 520px;
-    color: var(--muted);
-    line-height: 1.6;
-}
-
-.empty-actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.8rem;
-    flex-wrap: wrap;
-}
-
-@media (max-width: 1100px) {
-    .showtime-filter {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .showtime-card {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 650px) {
-    .showtime-page {
-        padding: 2rem 4%;
-    }
-
-    .showtime-filter-title {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .showtime-filter {
-        grid-template-columns: 1fr;
-    }
-
-    .showtime-filter button,
-    .showtime-filter a,
-    .empty-actions a {
-        width: 100%;
-        text-align: center;
-    }
-
-    .showtime-card {
-        grid-template-columns: 1fr;
-    }
-}
-.showtime-page {
-    padding: 3rem 6%;
-}
-
-.showtime-header {
-    margin-bottom: 1.6rem;
-}
-
-.showtime-header h1 {
-    font-size: clamp(2rem, 4vw, 4rem);
-    margin-bottom: 0.8rem;
-}
-
-.showtime-filter-box {
-    margin: 1.5rem 0 2rem;
-    padding: 1.2rem;
-    border: 1px solid var(--line);
-    border-radius: 1rem;
-    background: linear-gradient(135deg, rgba(21, 21, 29, 0.96), rgba(35, 35, 48, 0.88));
-}
-
-.showtime-filter-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.showtime-filter-title h2 {
-    margin: 0;
-    font-size: 1.15rem;
-    color: var(--text);
-}
-
-.showtime-filter-title p {
-    margin: 0;
     color: var(--muted);
     font-size: 0.95rem;
 }
 
-.showtime-filter {
-    display: grid;
-    grid-template-columns: minmax(180px, 1fr) minmax(160px, 0.8fr) minmax(150px, 0.7fr) auto auto;
-    gap: 0.8rem;
-    align-items: end;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.filter-group label {
+.showtime-result-summary strong {
     color: var(--gold-soft);
-    font-weight: 700;
-    font-size: 0.9rem;
-}
-
-.showtime-filter input[type="date"],
-.showtime-filter select {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--line);
-    border-radius: 0.7rem;
-    background: rgba(10, 10, 18, 0.72);
-    color: var(--text);
-    outline: none;
-}
-
-.showtime-filter input[type="date"]:focus,
-.showtime-filter select:focus {
-    border-color: var(--gold-soft);
 }
 
 .showtime-table {
@@ -396,4 +211,3 @@
         grid-template-columns: 1fr;
     }
 }
-
