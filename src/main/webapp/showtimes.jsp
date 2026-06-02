@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -72,6 +73,18 @@
             </a>
         </form>
     </section>
+
+    <div class="showtime-result-summary">
+        <c:choose>
+            <c:when test="${empty showtimes}">
+                Không tìm thấy lịch chiếu phù hợp với bộ lọc hiện tại.
+            </c:when>
+            <c:otherwise>
+                Tìm thấy <strong>${fn:length(showtimes)}</strong> lịch chiếu phù hợp.
+            </c:otherwise>
+        </c:choose>
+    </div>
+
 
     <section class="showtime-table">
         <c:choose>
