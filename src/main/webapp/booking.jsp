@@ -222,7 +222,7 @@
                 <div class="seat-legend">
                     <span><i class="legend-box legend-available"></i>Ghế trống</span>
                     <span><i class="legend-box legend-selected"></i>Đang chọn</span>
-                    <span><i class="legend-box legend-booked"></i>Đã đặt</span>
+                    <span><i class="legend-box legend-booked"></i>Đã đặt / đang giữ</span>
                 </div>
 
                 <div class="screen">Màn hình</div>
@@ -231,7 +231,7 @@
                     <%--
                         UC06 - 6.1.11:
                         Khách hàng chọn một hoặc nhiều ghế còn trống trên giao diện.
-                        Ghế đã được đặt sẽ bị disabled và không thể chọn.
+                        Ghế đã được đặt hoặc đang được giữ tạm thời sẽ bị disabled và không thể chọn.
                     --%>
                     <c:forEach var="seat" items="${seats}">
                         <label class="seat-item ${seat.booked ? 'booked' : 'available'}">

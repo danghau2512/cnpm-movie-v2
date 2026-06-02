@@ -1,6 +1,7 @@
 package Dao;
 
 import Util.JdbiConnector;
+import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
@@ -14,9 +15,8 @@ public class BookingDAO {
      * UC06 - Đặt vé
      * Tạo đơn đặt vé và lưu danh sách ghế khách hàng đã chọn.
      *
-     * Ngày 10:
-     * - Booking PENDING/UNPAID sẽ giữ ghế tạm thời trong SEAT_HOLD_TIMEOUT_MINUTES phút.
-     * - Booking hết hạn giữ ghế sẽ bị hủy và xóa booking_seats để mở ghế cho người khác đặt.
+     * Booking PENDING/UNPAID sẽ giữ ghế tạm thời trong SEAT_HOLD_TIMEOUT_MINUTES phút.
+     * Booking hết hạn giữ ghế sẽ bị hủy và mở lại ghế cho khách hàng khác đặt.
      */
     public int createBooking(int userId, int showtimeId, List<Integer> seatIds) {
         try {
@@ -150,7 +150,7 @@ public class BookingDAO {
      * Vì bảng booking_seats có unique(showtime_id, seat_id),
      * cần xóa booking_seats của booking hết hạn để ghế có thể được đặt lại.
      */
-    private void releaseExpiredSeatHolds(org.jdbi.v3.core.Handle handle, int showtimeId) {
+    private void releaseExpiredSeatHolds(Handle handle, int showtimeId) {
         List<Integer> expiredBookingIds = handle.createQuery("""
                         SELECT id
                         FROM bookings
@@ -178,7 +178,8 @@ public class BookingDAO {
         handle.createUpdate("""
                         UPDATE bookings
                         SET booking_status = 'CANCELLED',
-                            payment_status = 'FAILED'
+                            payment_status = 'FAILED',
+                            hold_expires_at = NULL
                         WHERE id IN (<bookingIds>)
                         """)
                 .bindList("bookingIds", expiredBookingIds)
@@ -186,6 +187,10 @@ public class BookingDAO {
     }
 
     public void confirmBooking(int bookingId) {
+        /*
+         * UC06 - 6.1.25A:
+         * Không xác nhận thanh toán nếu booking đã hết hạn giữ ghế.
+         */
         String sql = """
             UPDATE bookings
             SET booking_status = 'CONFIRMED',
@@ -209,6 +214,10 @@ public class BookingDAO {
     }
 
     public void cancelBooking(int bookingId) {
+        /*
+         * UC06 - 6.1.25A:
+         * Hủy booking và giải phóng ghế khi booking hết hạn hoặc bị hủy.
+         */
         jdbi.useTransaction(handle -> {
             handle.createUpdate("""
                             DELETE FROM booking_seats
