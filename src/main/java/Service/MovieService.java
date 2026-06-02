@@ -3,7 +3,10 @@ package Service;
 import Dao.MovieDAO;
 import Model.Movie;
 
+import java.text.Normalizer;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MovieService {
     private final MovieDAO movieDAO = new MovieDAO();
@@ -23,20 +26,46 @@ public class MovieService {
     }
 
     public List<Movie> searchMovies(String keyword) {
-        // UC03 - 3.1.5: Chuẩn hóa keyword trước khi gọi DAO tìm kiếm phim
         String normalizedKeyword = normalizeKeyword(keyword);
 
-        // UC03 - 3.1.6: Gọi MovieDAO để tìm danh sách phim theo từ khóa đã chuẩn hóa
-        return movieDAO.findMoviesByKeyword(normalizedKeyword);
+        // Thử tìm bình thường trước (có dấu, không phân biệt hoa thường)
+        List<Movie> results = movieDAO.findMoviesByKeyword(normalizedKeyword);
+
+        if (!results.isEmpty()) {
+            return results;
+        }
+
+        // Không có kết quả → thử tìm không dấu trong Java
+        String lowerNorm = stripAccents(normalizedKeyword).toLowerCase();
+        List<Movie> allMovies = movieDAO.findAllForSearch();
+
+        List<Movie> filtered = allMovies.stream()
+                .filter(m -> stripAccents(m.getTitle()).toLowerCase().contains(lowerNorm)
+                        || stripAccents(m.getGenreNames() != null ? m.getGenreNames() : "").toLowerCase().contains(lowerNorm))
+                .collect(Collectors.toList());
+
+        filtered.sort(Comparator.comparingInt(m -> {
+            String t = stripAccents(m.getTitle()).toLowerCase();
+            if (t.startsWith(lowerNorm)) return 0;
+            if (t.contains(lowerNorm)) return 1;
+            return 2;
+        }));
+
+        return filtered;
     }
 
     public String normalizeKeyword(String keyword) {
-        if (keyword == null) {
-            return "";
-        }
-
-        // UC03 - 3.1.5: Loại bỏ khoảng trắng thừa ở đầu/cuối và gom nhiều khoảng trắng thành một khoảng trắng
+        if (keyword == null) return "";
         return keyword.trim().replaceAll("\\s+", " ");
+    }
+
+    private String stripAccents(String text) {
+        if (text == null) return "";
+        // Xử lý đ/Đ trước vì không decompose qua NFD
+        String s = text.replace("đ", "d").replace("Đ", "D");
+        s = Normalizer.normalize(s, Normalizer.Form.NFD);
+        s = s.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return s;
     }
 
     public List<String> getAllGenres() {
