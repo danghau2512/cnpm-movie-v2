@@ -148,8 +148,10 @@ public class MovieDAO {
     }
 
     public Movie findById(int id) {
-        // UC04 - 4.1.5: MovieDAO truy vấn thông tin chi tiết phim theo id
-        // Chỉ lấy phim đang chiếu để tránh người dùng truy cập trực tiếp phim không hợp lệ
+        // UC04 - 4.1.5:
+        // MovieDAO truy vấn thông tin chi tiết phim từ bảng movies,
+        // kết hợp movie_genres và genres để lấy danh sách thể loại.
+        // Chỉ lấy phim có status = 'NOW_SHOWING' để không cho xem chi tiết phim không còn được hiển thị.
         String sql = """
             SELECT 
                 m.id,
@@ -162,6 +164,8 @@ public class MovieDAO {
                 m.trailer_url AS trailerUrl,
                 DATE_FORMAT(m.release_date, '%d/%m/%Y') AS releaseDate,
                 m.status,
+                
+                -- UC04 - A6: Nếu phim chưa được gán thể loại thì hiển thị "Chưa phân loại" 
                 COALESCE(gd.genreNames, 'Chưa phân loại') AS genreNames
             FROM movies m
             LEFT JOIN (
@@ -171,10 +175,14 @@ public class MovieDAO {
                 FROM movie_genres mg
                 JOIN genres g ON mg.genre_id = g.id
                 GROUP BY mg.movie_id
-            ) gd ON m.id = gd.movie_id
+            ) gd ON m.id = gd.movie_id 
+            -- UC04 - A7: Phim khác trạng thái NOW_SHOWING sẽ không được lấy ra 
             WHERE m.id = :id AND m.status = 'NOW_SHOWING'
             """;
 
+        // UC04 - 4.1.6:
+        // Ánh xạ kết quả truy vấn thành đối tượng Movie.
+        // Nếu không tìm thấy phim thì trả về null cho MovieService.
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
                         .bind("id", id)

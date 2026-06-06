@@ -150,6 +150,9 @@
 
     <section class="detail-layout">
         <div class="detail-poster movie-detail-poster">
+            <%-- UC04 - 4.1.9:
+         Hiển thị poster phim trên trang chi tiết.
+         Nếu posterUrl rỗng thì chuyển sang luồng A4. --%>
             <c:choose>
                 <c:when test="${not empty movie.posterUrl}">
                     <img src="${movie.posterUrl}" alt="${movie.title}">
@@ -175,6 +178,8 @@
         </div>
 
         <div class="detail-content">
+            <%-- UC04 - 4.1.9:
+         Hiển thị tên phim, mô tả ngắn và nội dung chi tiết của phim. --%>
             <h2>${movie.title}</h2>
 
             <div class="meta detail-meta">
@@ -193,6 +198,8 @@
                 </span>
 
                             <span>
+
+                    <%-- UC04 - A6: Nếu phim chưa được gán thể loại thì hiển thị "Chưa phân loại". --%>
                     <c:choose>
                         <c:when test="${not empty movie.genreNames}">
                             ${movie.genreNames}
@@ -240,12 +247,16 @@
             </p>
 
             <div class="detail-actions">
+                <%-- UC04 - 4.1.11:
+         Hiển thị nút "Xem lịch chiếu" để chuyển sang UC05 với movieId tương ứng. --%>
                 <a class="btn btn-primary"
                    href="${pageContext.request.contextPath}/showtimes?movieId=${movie.id}">
                     Xem lịch chiếu
                 </a>
 
-                <%-- UC04 - A5: Nếu phim không có trailer thì không hiển thị nút Trailer --%>
+                    <%-- UC04 - 4.1.10 + A5:
+             Nếu trailerUrl không rỗng thì hiển thị nút Trailer.
+             Nếu trailerUrl rỗng thì nút Trailer bị ẩn hoàn toàn. --%>
                 <c:if test="${not empty movie.trailerUrl}">
                     <button type="button"
                             class="btn btn-ghost"
@@ -254,6 +265,10 @@
                     </button>
                 </c:if>
 
+                    <%-- UC04 - 4.1.12:
+         Hiển thị nút "Quay lại".
+         Nếu người dùng vào từ trang tìm kiếm thì quay lại kèm keyword,
+         nếu không có keyword thì quay về /movies. --%>
                 <c:choose>
                     <c:when test="${not empty keyword}">
                         <a class="btn btn-ghost"
@@ -309,6 +324,7 @@
         return url;
     }
 
+    // UC04 - 4.1.10: Mở modal trailer và gán đường dẫn video vào iframe
     function openTrailer(url) {
         const modal = document.getElementById("trailerModal");
         const frame = document.getElementById("trailerFrame");

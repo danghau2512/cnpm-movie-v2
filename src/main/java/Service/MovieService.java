@@ -72,6 +72,7 @@ public class MovieService {
         return movieDAO.findAllGenres();
     }
 
+    // UC04 - 4.1.4: MovieService gọi MovieDAO để truy vấn thông tin chi tiết phim theo id
     public Movie getMovieDetail(int id) {
         return movieDAO.findById(id);
     }
