@@ -144,7 +144,7 @@
 </style>
 <body data-page="movies">
 
-<jsp:include page="/header.jsp" />
+<jsp:include page="/header.jsp"/>
 
 <main class="page-shell">
     <section class="page-title">
@@ -177,7 +177,7 @@
                         <c:forEach var="genre" items="${suggestedGenres}">
                             <a class="genre-tag"
                                href="${pageContext.request.contextPath}/search?keyword=${genre}">
-                                ${genre}
+                                    ${genre}
                             </a>
                         </c:forEach>
                     </div>
@@ -204,7 +204,6 @@
     </section>
 
 
-
     <%-- UC03 - 3.1.12: Hiển thị số lượng phim tìm được theo keyword --%>
     <p class="muted movie-count">
         Có ${movies.size()} phim được hiển thị.
@@ -222,7 +221,8 @@
             <c:otherwise>
                 <%-- UC03 - 3.1.12: Duyệt danh sách phim phù hợp và hiển thị lên giao diện --%>
                 <c:forEach var="movie" items="${movies}">
-                    <div class="movie-card" data-movie-card data-genre="${movie.genreNames}" data-rating="${movie.ageRating}" data-status="${movie.status}">
+                    <div class="movie-card" data-movie-card data-genre="${movie.genreNames}"
+                         data-rating="${movie.ageRating}" data-status="${movie.status}">
                         <div class="movie-poster">
                             <span class="age-tag">${movie.ageRating}</span>
 
@@ -255,10 +255,15 @@
                             <p>Thể loại: ${movie.genreNames}</p>
 
                             <div class="movie-actions">
-                                <a class="btn btn-ghost"
-                                   href="${pageContext.request.contextPath}/movie-detail?id=${movie.id}&keyword=${keyword}">
-                                    Chi tiết
-                                </a>
+                                    <%-- UC04 - 4.1.0:
+                                     Khách hàng nhấn nút "Chi tiết" trên movie card ở trang /movies.
+                                     Chỉ phim NOW_SHOWING mới được phép đi tới /movie-detail?id={movieId}. --%>
+                                <c:if test="${movie.status == 'NOW_SHOWING'}">
+                                    <a class="btn btn-ghost"
+                                       href="${pageContext.request.contextPath}/movie-detail?id=${movie.id}&keyword=${keyword}">
+                                        Chi tiết
+                                    </a>
+                                </c:if>
 
                                 <c:choose>
                                     <c:when test="${movie.status == 'NOW_SHOWING'}">
@@ -268,7 +273,8 @@
                                         </a>
                                     </c:when>
                                     <c:otherwise>
-                                        <button class="btn btn-primary" disabled style="opacity:0.4;cursor:not-allowed;">
+                                        <button class="btn btn-primary" disabled
+                                                style="opacity:0.4;cursor:not-allowed;">
                                             Sắp chiếu
                                         </button>
                                     </c:otherwise>
@@ -286,7 +292,7 @@
     </div>
 </main>
 
-<jsp:include page="/footer.jsp" />
+<jsp:include page="/footer.jsp"/>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

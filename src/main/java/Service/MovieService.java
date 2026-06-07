@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MovieService {
-    private final MovieDAO movieDAO = new MovieDAO();
+    private final MovieDAO movieDAO;
+
+    public MovieService() {
+        this(new MovieDAO());
+    }
+
+    public MovieService(MovieDAO movieDAO) {
+        this.movieDAO = movieDAO;
+    }
 
     public List<Movie> getNowShowingMovies() {
         return movieDAO.findAllNowShowing();
@@ -72,6 +80,7 @@ public class MovieService {
         return movieDAO.findAllGenres();
     }
 
+    // UC04 - 4.1.4: MovieService gọi MovieDAO để truy vấn thông tin chi tiết phim theo id
     public Movie getMovieDetail(int id) {
         return movieDAO.findById(id);
     }
