@@ -29,6 +29,16 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.2'
+
+    // Thêm dòng này để đồng bộ JUnit Platform với JUnit 5.13.2
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.2'
+
+    // Mockito dùng cho unit test
+    testImplementation 'org.mockito:mockito-core:5.12.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
+
+    // Servlet API cho test Controller
+    testImplementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 }
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.2')
