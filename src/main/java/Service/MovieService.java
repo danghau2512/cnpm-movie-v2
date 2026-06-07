@@ -34,24 +34,33 @@ public class MovieService {
     }
 
     public List<Movie> searchMovies(String keyword) {
+        // UC03 - 3.1.5: MovieService nhận yêu cầu tìm kiếm phim từ SearchController
+
+        // UC03 - 3.1.6: Chuẩn hóa keyword – trim khoảng trắng, gộp nhiều space liên tiếp
         String normalizedKeyword = normalizeKeyword(keyword);
 
-        // Thử tìm bình thường trước (có dấu, không phân biệt hoa thường)
+        // UC03 - 3.1.7: Gọi MovieDAO.findMoviesByKeyword để tìm kiếm có dấu trong database
         List<Movie> results = movieDAO.findMoviesByKeyword(normalizedKeyword);
 
+        // UC03 - 3.1.8: Nếu database trả về kết quả thì trả về luôn, không cần fallback
         if (!results.isEmpty()) {
             return results;
         }
 
-        // Không có kết quả → thử tìm không dấu trong Java
+        // UC03 - 3.1.8: Không có kết quả từ DB → fallback tìm không dấu bằng Java
+        // Chuẩn hóa keyword: xử lý đ/Đ → d/D trước, sau đó NFD để bỏ dấu
         String lowerNorm = stripAccents(normalizedKeyword).toLowerCase();
+
+        // UC03 - 3.1.9: Lấy toàn bộ danh sách phim từ DB để lọc phía Java
         List<Movie> allMovies = movieDAO.findAllForSearch();
 
+        // UC03 - 3.1.9: Lọc phim theo tên hoặc thể loại sau khi chuẩn hóa không dấu
         List<Movie> filtered = allMovies.stream()
                 .filter(m -> stripAccents(m.getTitle()).toLowerCase().contains(lowerNorm)
                         || stripAccents(m.getGenreNames() != null ? m.getGenreNames() : "").toLowerCase().contains(lowerNorm))
                 .collect(Collectors.toList());
 
+        // UC03 - 3.1.10: Sắp xếp kết quả: tên bắt đầu bằng keyword ưu tiên hơn tên chứa keyword
         filtered.sort(Comparator.comparingInt(m -> {
             String t = stripAccents(m.getTitle()).toLowerCase();
             if (t.startsWith(lowerNorm)) return 0;
@@ -59,6 +68,7 @@ public class MovieService {
             return 2;
         }));
 
+        // UC03 - 3.1.10: Trả kết quả tìm kiếm về SearchController
         return filtered;
     }
 
