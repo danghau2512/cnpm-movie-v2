@@ -246,27 +246,18 @@ class BookingDAOIntegrationTest {
 
         List<Integer> seatIds = jdbi.withHandle(handle ->
                 handle.createQuery("""
-                                SELECT se.id
-                                FROM seats se
-                                JOIN showtimes st ON st.room_id = se.room_id
-                                WHERE st.id = :showtimeId
-                                AND NOT EXISTS (
-                                    SELECT 1
-                                    FROM booking_seats bs
-                                    JOIN bookings b ON b.id = bs.booking_id
-                                    WHERE bs.showtime_id = st.id
-                                    AND bs.seat_id = se.id
-                                    AND (
-                                        b.booking_status = 'CONFIRMED'
-                                        OR (
-                                            b.booking_status = 'PENDING'
-                                            AND b.payment_status = 'UNPAID'
-                                            AND b.hold_expires_at > NOW()
-                                        )
-                                    )
-                                )
-                                LIMIT :seatCount
-                                """)
+                        SELECT se.id
+                        FROM seats se
+                        JOIN showtimes st ON st.room_id = se.room_id
+                        WHERE st.id = :showtimeId
+                        AND NOT EXISTS (
+                            SELECT 1
+                            FROM booking_seats bs
+                            WHERE bs.showtime_id = st.id
+                            AND bs.seat_id = se.id
+                        )
+                        LIMIT :seatCount
+                        """)
                         .bind("showtimeId", showtimeId)
                         .bind("seatCount", seatCount)
                         .mapTo(Integer.class)
