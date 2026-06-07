@@ -156,8 +156,18 @@
                 </c:when>
 
                 <c:otherwise>
+                    <%-- UC04 - A4: Nếu phim không có poster thì hiển thị poster thay thế --%>
                     <div class="poster-placeholder">
-                        <span>${movie.ageRating}</span>
+                        <span>
+                            <c:choose>
+                                <c:when test="${not empty movie.ageRating}">
+                                    ${movie.ageRating}
+                                </c:when>
+                                <c:otherwise>
+                                    Chưa phân loại
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
                         <h2>${movie.title}</h2>
                     </div>
                 </c:otherwise>
@@ -168,22 +178,65 @@
             <h2>${movie.title}</h2>
 
             <div class="meta detail-meta">
+                <%-- UC04 - 4.1.9: Hiển thị thời lượng, độ tuổi, thể loại và ngày khởi chiếu của phim --%>
                 <span>${movie.durationMinutes} phút</span>
-                <span>${movie.ageRating}</span>
-                <span>${movie.genreNames}</span>
-                <c:if test="${not empty movie.releaseDate}">
-                    <span>Khởi chiếu: ${movie.releaseDate}</span>
-                </c:if>
+
+                            <span>
+                    <c:choose>
+                        <c:when test="${not empty movie.ageRating}">
+                            ${movie.ageRating}
+                        </c:when>
+                        <c:otherwise>
+                            Chưa phân loại độ tuổi
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+
+                            <span>
+                    <c:choose>
+                        <c:when test="${not empty movie.genreNames}">
+                            ${movie.genreNames}
+                        </c:when>
+                        <c:otherwise>
+                            Chưa phân loại
+                        </c:otherwise>
+                    </c:choose>
+                </span>
+
+                            <span>
+                    <c:choose>
+                        <c:when test="${not empty movie.releaseDate}">
+                            Khởi chiếu: ${movie.releaseDate}
+                        </c:when>
+                        <c:otherwise>
+                            Khởi chiếu: Chưa cập nhật
+                        </c:otherwise>
+                    </c:choose>
+                </span>
             </div>
 
             <h3>Mô tả ngắn</h3>
             <p class="muted">
-                ${movie.shortDescription}
+                <c:choose>
+                    <c:when test="${not empty movie.shortDescription}">
+                        ${movie.shortDescription}
+                    </c:when>
+                    <c:otherwise>
+                        Chưa có mô tả ngắn cho phim này.
+                    </c:otherwise>
+                </c:choose>
             </p>
 
             <h3>Nội dung phim</h3>
             <p class="muted movie-description">
-                ${movie.description}
+                <c:choose>
+                    <c:when test="${not empty movie.description}">
+                        ${movie.description}
+                    </c:when>
+                    <c:otherwise>
+                        Chưa có nội dung chi tiết cho phim này.
+                    </c:otherwise>
+                </c:choose>
             </p>
 
             <div class="detail-actions">
@@ -192,6 +245,7 @@
                     Xem lịch chiếu
                 </a>
 
+                <%-- UC04 - A5: Nếu phim không có trailer thì không hiển thị nút Trailer --%>
                 <c:if test="${not empty movie.trailerUrl}">
                     <button type="button"
                             class="btn btn-ghost"
@@ -200,10 +254,20 @@
                     </button>
                 </c:if>
 
-                <a class="btn btn-ghost"
-                   href="${pageContext.request.contextPath}/movies">
-                    Quay lại danh sách
-                </a>
+                <c:choose>
+                    <c:when test="${not empty keyword}">
+                        <a class="btn btn-ghost"
+                           href="${pageContext.request.contextPath}/movies?keyword=${keyword}">
+                            Quay lại danh sách
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="btn btn-ghost"
+                           href="${pageContext.request.contextPath}/movies">
+                            Quay lại danh sách
+                        </a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </section>
@@ -225,11 +289,32 @@
 </div>
 
 <script>
+    function convertYoutubeUrl(url) {
+        if (!url) {
+            return "";
+        }
+
+        if (url.includes("/embed/")) {
+            return url;
+        }
+
+        if (url.includes("watch?v=")) {
+            return url.replace("watch?v=", "embed/");
+        }
+
+        if (url.includes("youtu.be/")) {
+            return url.replace("youtu.be/", "www.youtube.com/embed/");
+        }
+
+        return url;
+    }
+
     function openTrailer(url) {
         const modal = document.getElementById("trailerModal");
         const frame = document.getElementById("trailerFrame");
 
-        frame.src = url + "?autoplay=1";
+        const embedUrl = convertYoutubeUrl(url);
+        frame.src = embedUrl + (embedUrl.includes("?") ? "&autoplay=1" : "?autoplay=1");
         modal.style.display = "flex";
     }
 
@@ -249,6 +334,11 @@
                 closeTrailer();
             }
         });
+    });
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeTrailer();
+        }
     });
 </script>
 </body>

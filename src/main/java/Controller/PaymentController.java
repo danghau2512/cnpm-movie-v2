@@ -33,8 +33,13 @@ public class PaymentController extends HttpServlet {
             return;
         }
 
-        int bookingId = Integer.parseInt(request.getParameter("bookingId"));
-// UC07 - 7.1.2 + 7.1.4: Lấy thông tin thanh toán của booking và kiểm tra quyền sở hữu đơn
+        Integer bookingId = parseBookingId(request.getParameter("bookingId"));
+
+        if (bookingId == null) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+        // UC07 - 7.1.2  Lấy thông tin thanh toán của booking
         PaymentInfo paymentInfo = paymentService.getPaymentInfo(bookingId);
 
         if (paymentInfo == null || paymentInfo.getUserId() != currentUser.getId()) {
@@ -139,7 +144,13 @@ public class PaymentController extends HttpServlet {
         }
 
         try {
-            return Integer.parseInt(bookingIdParam);
+            int bookingId = Integer.parseInt(bookingIdParam.trim());
+
+            if (bookingId <= 0) {
+                return null;
+            }
+
+            return bookingId;
         } catch (NumberFormatException e) {
             return null;
         }

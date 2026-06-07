@@ -78,6 +78,64 @@
         min-width: 0;
     }
 
+    .status-badge {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .status-badge.now-showing {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4caf50;
+        border: 1px solid #4caf50;
+    }
+
+    .status-badge.coming-soon {
+        background: rgba(240, 184, 74, 0.2);
+        color: var(--gold-soft);
+        border: 1px solid var(--gold-soft);
+    }
+
+    .genre-suggestions {
+        margin-top: 1rem;
+        padding: 1rem 1.2rem;
+        border: 1px dashed rgba(240, 184, 74, 0.4);
+        border-radius: 0.75rem;
+        background: rgba(240, 184, 74, 0.05);
+    }
+
+    .genre-suggestions p {
+        color: var(--muted);
+        margin-bottom: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .genre-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .genre-tag {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(240, 184, 74, 0.6);
+        color: var(--gold-soft);
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .genre-tag:hover {
+        background: rgba(240, 184, 74, 0.15);
+    }
+
     @media (max-width: 700px) {
         .page-title {
             grid-template-columns: 1fr;
@@ -92,14 +150,39 @@
     <section class="page-title">
         <%-- UC03 - 3.1.12: Hiển thị khu vực kết quả tìm kiếm phim cho khách hàng --%>
         <p class="eyebrow">UC03 - Tìm kiếm phim</p>
-        <h1>Tìm kiếm phim</h1>
-        <p class="muted">
-            Người dùng có thể tìm phim theo tên phim hoặc thể loại phim đang chiếu.
-        </p>
+
+        <c:choose>
+            <c:when test="${not empty keyword}">
+                <h1>Kết quả cho: &ldquo;${keyword}&rdquo;</h1>
+                <p class="muted">
+                    Tìm thấy <strong>${movies.size()}</strong> phim phù hợp.
+                </p>
+            </c:when>
+            <c:otherwise>
+                <h1>Danh sách phim</h1>
+                <p class="muted">
+                    Tìm phim theo tên hoặc thể loại. Đang hiển thị <strong>${movies.size()}</strong> phim.
+                </p>
+            </c:otherwise>
+        </c:choose>
 
         <c:if test="${not empty message}">
             <%-- UC03 - 3.2.1 + 3.2.3: Hiển thị thông báo khi keyword rỗng hoặc không tìm thấy phim --%>
             <p class="empty-message">${message}</p>
+
+            <c:if test="${not empty suggestedGenres}">
+                <div class="genre-suggestions">
+                    <p>Bạn có thể thử tìm theo thể loại phổ biến:</p>
+                    <div class="genre-tags">
+                        <c:forEach var="genre" items="${suggestedGenres}">
+                            <a class="genre-tag"
+                               href="${pageContext.request.contextPath}/search?keyword=${genre}">
+                                ${genre}
+                            </a>
+                        </c:forEach>
+                    </div>
+                </div>
+            </c:if>
         </c:if>
         <label>Thể loại
             <select id="genreFilter">
@@ -109,6 +192,13 @@
         <label>Độ tuổi
             <select id="ratingFilter">
                 <option value="">Tất cả độ tuổi</option>
+            </select>
+        </label>
+        <label>Trạng thái
+            <select id="statusFilter">
+                <option value="">Tất cả</option>
+                <option value="NOW_SHOWING">Đang chiếu</option>
+                <option value="COMING_SOON">Sắp chiếu</option>
             </select>
         </label>
     </section>
@@ -132,7 +222,7 @@
             <c:otherwise>
                 <%-- UC03 - 3.1.12: Duyệt danh sách phim phù hợp và hiển thị lên giao diện --%>
                 <c:forEach var="movie" items="${movies}">
-                    <div class="movie-card" data-movie-card data-genre="${movie.genreNames}" data-rating="${movie.ageRating}">
+                    <div class="movie-card" data-movie-card data-genre="${movie.genreNames}" data-rating="${movie.ageRating}" data-status="${movie.status}">
                         <div class="movie-poster">
                             <span class="age-tag">${movie.ageRating}</span>
 
@@ -149,27 +239,40 @@
                             </c:choose>
                         </div>
                         <div class="movie-info">
+                            <c:choose>
+                                <c:when test="${movie.status == 'NOW_SHOWING'}">
+                                    <span class="status-badge now-showing">Đang chiếu</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="status-badge coming-soon">Sắp chiếu</span>
+                                </c:otherwise>
+                            </c:choose>
+
                             <h3>${movie.title}</h3>
 
-                            <p>
-                                Thời lượng: ${movie.durationMinutes} phút
-                            </p>
-
-                            <p>
-                                Độ tuổi: ${movie.ageRating}
-                            </p>
-                            <p>Thể loại : ${movie.genreNames}</p>
+                            <p>Thời lượng: ${movie.durationMinutes} phút</p>
+                            <p>Độ tuổi: ${movie.ageRating}</p>
+                            <p>Thể loại: ${movie.genreNames}</p>
 
                             <div class="movie-actions">
                                 <a class="btn btn-ghost"
-                                   href="${pageContext.request.contextPath}/movie-detail?id=${movie.id}">
+                                   href="${pageContext.request.contextPath}/movie-detail?id=${movie.id}&keyword=${keyword}">
                                     Chi tiết
                                 </a>
 
-                                <a class="btn btn-primary"
-                                   href="${pageContext.request.contextPath}/showtimes?movieId=${movie.id}">
-                                    Đặt vé
-                                </a>
+                                <c:choose>
+                                    <c:when test="${movie.status == 'NOW_SHOWING'}">
+                                        <a class="btn btn-primary"
+                                           href="${pageContext.request.contextPath}/showtimes?movieId=${movie.id}">
+                                            Đặt vé
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class="btn btn-primary" disabled style="opacity:0.4;cursor:not-allowed;">
+                                            Sắp chiếu
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>
@@ -189,6 +292,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         var genreFilter = document.getElementById("genreFilter");
         var ratingFilter = document.getElementById("ratingFilter");
+        var statusFilter = document.getElementById("statusFilter");
         var movieCount = document.querySelector(".movie-count");
         var noFilteredMovies = document.getElementById("noFilteredMovies");
         var movieCards = Array.prototype.slice.call(document.querySelectorAll("[data-movie-card]"));
@@ -230,12 +334,14 @@
         function filterMovies() {
             var selectedGenre = genreFilter.value;
             var selectedRating = ratingFilter.value;
+            var selectedStatus = statusFilter ? statusFilter.value : "";
             var visibleCount = 0;
 
             movieCards.forEach(function (card) {
                 var matchesGenre = !selectedGenre || getGenres(card).indexOf(selectedGenre) !== -1;
                 var matchesRating = !selectedRating || card.dataset.rating === selectedRating;
-                var isVisible = matchesGenre && matchesRating;
+                var matchesStatus = !selectedStatus || card.dataset.status === selectedStatus;
+                var isVisible = matchesGenre && matchesRating && matchesStatus;
 
                 card.classList.toggle("hidden", !isVisible);
                 if (isVisible) {
@@ -251,6 +357,9 @@
 
         genreFilter.addEventListener("change", filterMovies);
         ratingFilter.addEventListener("change", filterMovies);
+        if (statusFilter) {
+            statusFilter.addEventListener("change", filterMovies);
+        }
     });
 </script>
 

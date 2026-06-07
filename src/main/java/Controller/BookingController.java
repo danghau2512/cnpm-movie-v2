@@ -64,14 +64,16 @@ public class BookingController extends HttpServlet {
             // UC06 - 6.1.15: BookingController gọi BookingService.createBooking(userId, showtimeId, seatIds)
             int bookingId = bookingService.createBooking(currentUser.getId(), showtimeId, seatIds);
 
-            // UC06 - 6.1.23: BookingService trả về bookingId cho BookingController
+            // UC06 - 6.1.24: BookingService trả về bookingId cho BookingController
 
-            // UC06 - 6.1.24: BookingController redirectToPayment(bookingId)
+            // UC06 - 6.1.25: BookingController redirectToPayment(bookingId)
             response.sendRedirect(request.getContextPath() + "/payment?bookingId=" + bookingId);
 
         } catch (RuntimeException e) {
-            // UC06 - 6.1.16A / 6.1.19A / 6.1.20A / 6.1.21A:
-            // Nhận lỗi từ Service/DAO và hiển thị lại trang đặt vé
+            /*
+             * UC06 - 6.1.16A / 6.1.20A / 6.1.21A / 6.1.22A:
+             * Nhận lỗi từ BookingService hoặc BookingDAO và hiển thị lại trang đặt vé.
+             */
             showBookingPage(request, response, e.getMessage());
         }
     }
@@ -100,9 +102,8 @@ public class BookingController extends HttpServlet {
         // UC06 - 6.1.4: BookingController gọi BookingService.getShowtimeDetail(showtimeId)
         Showtime showtime = bookingService.getShowtimeDetail(showtimeId);
 
-        if (showtime == null || !"OPEN".equalsIgnoreCase(showtime.getStatus())) {
-            // UC06 - 6.1.6A.1 - 6.1.6A.3:
-            // Suất chiếu không tồn tại hoặc không còn cho phép đặt vé
+        if (showtime == null) {
+            // UC06 - 6.1.6A.1 - 6.1.6A.3: Suất chiếu không tồn tại hoặc không còn cho phép đặt vé
             response.sendRedirect(request.getContextPath() + "/showtimes");
             return;
         }
@@ -114,7 +115,7 @@ public class BookingController extends HttpServlet {
         request.setAttribute("seats", seats);
         request.setAttribute("error", error);
 
-        // UC06 - 6.1.10: BookingController thực hiện showBookingPage(showtime, seats)
+        // UC06 - 6.1.10: BookingController forward dữ liệu sang booking.jsp
         request.getRequestDispatcher("/booking.jsp")
                 .forward(request, response);
     }

@@ -12,10 +12,15 @@ public class SeatDAO {
 
     /**
      * UC06 - Đặt vé
-     * Lấy danh sách ghế theo suất chiếu và xác định trạng thái ghế đã được đặt hay chưa.
+     * Lấy danh sách ghế theo suất chiếu và xác định trạng thái ghế đã được đặt hoặc đang được giữ hay chưa.
      */
     public List<Seat> findSeatsByShowtimeId(int showtimeId) {
-        // UC06 - 6.1.8: SeatDAO truy vấn danh sách ghế và trạng thái ghế theo showtimeId
+        /*
+         * UC06 - 6.1.8:
+         * SeatDAO truy vấn danh sách ghế và trạng thái ghế theo showtimeId.
+         * Ghế được xem là đã đặt nếu thuộc booking CONFIRMED
+         * hoặc đang được giữ bởi booking PENDING/UNPAID còn hạn hold_expires_at.
+         */
         String sql = """
             SELECT
                 se.id,
@@ -30,7 +35,14 @@ public class SeatDAO {
                         JOIN bookings b ON b.id = bs.booking_id
                         WHERE bs.showtime_id = st.id
                         AND bs.seat_id = se.id
-                        AND b.booking_status IN ('PENDING', 'CONFIRMED')
+                        AND (
+                            b.booking_status = 'CONFIRMED'
+                            OR (
+                                b.booking_status = 'PENDING'
+                                AND b.payment_status = 'UNPAID'
+                                AND b.hold_expires_at > NOW()
+                            )
+                        )
                     )
                     THEN true
                     ELSE false

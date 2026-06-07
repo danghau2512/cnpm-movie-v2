@@ -77,7 +77,10 @@ public class SearchController extends HttpServlet {
 
         if (movies.isEmpty()) {
             // UC03 - 3.2.2: Không tìm thấy phim thì gửi thông báo không có kết quả sang JSP
-            request.setAttribute("message", "Không tìm thấy phim phù hợp với từ khóa: " + keyword.trim());
+            request.setAttribute("message", "Không tìm thấy phim phù hợp với từ khóa: \"" + keyword.trim() + "\"");
+            // Gợi ý thể loại phổ biến để người dùng thử lại
+            List<String> suggestedGenres = movieService.getAllGenres();
+            request.setAttribute("suggestedGenres", suggestedGenres);
         }
 
         // UC03 - 3.1.11: Chuyển danh sách phim tìm được sang JSP để hiển thị kết quả tìm kiếm
