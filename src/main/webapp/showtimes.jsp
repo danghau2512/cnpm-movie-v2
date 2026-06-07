@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -7,77 +8,7 @@
     <meta charset="UTF-8">
     <title>CineBook - Lịch chiếu</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-
-    <style>
-        .showtime-page {
-            padding: 3rem 6%;
-        }
-
-        .showtime-header {
-            margin-bottom: 2rem;
-        }
-
-        .showtime-header h1 {
-            font-size: clamp(2rem, 4vw, 4rem);
-            margin-bottom: 0.8rem;
-        }
-
-        .showtime-table {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .showtime-card {
-            display: grid;
-            grid-template-columns: 1.4fr 0.8fr 0.8fr 0.8fr 0.8fr auto;
-            gap: 1rem;
-            align-items: center;
-            padding: 1.2rem;
-            border: 1px solid var(--line);
-            border-radius: 0.75rem;
-            background: rgba(21, 21, 29, 0.88);
-        }
-
-        .showtime-card h3 {
-            margin: 0 0 0.3rem;
-        }
-
-        .showtime-card p {
-            margin: 0;
-            color: var(--muted);
-        }
-
-        .showtime-info span {
-            display: block;
-            color: var(--gold-soft);
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-        }
-
-        .showtime-info small {
-            color: var(--muted);
-        }
-
-        .empty-showtime {
-            padding: 2rem;
-            border: 1px dashed rgba(240, 184, 74, 0.55);
-            border-radius: 0.75rem;
-            color: var(--gold-soft);
-            text-align: center;
-        }
-
-        @media (max-width: 1000px) {
-            .showtime-card {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .showtime-card {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/showtimes.css">
 </head>
 
 <body data-page="showtimes">
@@ -90,33 +21,93 @@
 
         <h1>Lịch chiếu phim</h1>
 
-        <c:choose>
-            <c:when test="${not empty movieId}">
-                <p class="muted">
-                    Danh sách suất chiếu của phim đã chọn.
-                </p>
-            </c:when>
+        <p class="muted">
+            Chọn phim, thể loại hoặc ngày chiếu để tìm suất chiếu phù hợp nhanh hơn.
+        </p>
+    </section>
 
+    <section class="showtime-filter-box">
+        <div class="showtime-filter-title">
+            <div>
+                <h2>Bộ lọc lịch chiếu</h2>
+                <p>Lọc theo tên phim, thể loại phim hoặc ngày chiếu.</p>
+            </div>
+        </div>
+
+        <form method="get" action="${pageContext.request.contextPath}/showtimes" class="showtime-filter">
+            <div class="filter-group">
+                <label for="movieId">Tên phim</label>
+                <select id="movieId" name="movieId">
+                    <option value="">Tất cả phim</option>
+                    <c:forEach var="movie" items="${movies}">
+                        <option value="${movie.id}" ${movieId == movie.id ? 'selected="selected"' : ''}>
+                            ${movie.title}
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="genreName">Thể loại</label>
+                <select id="genreName" name="genreName">
+                    <option value="">Tất cả thể loại</option>
+                    <c:forEach var="genre" items="${genres}">
+                        <option value="${genre}" ${genreName == genre ? 'selected="selected"' : ''}>
+                            ${genre}
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="showDate">Ngày chiếu</label>
+                <input id="showDate" type="date" name="showDate" value="${showDate}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Lọc lịch chiếu
+            </button>
+
+            <a class="btn" href="${pageContext.request.contextPath}/showtimes">
+                Xóa lọc
+            </a>
+        </form>
+    </section>
+
+    <div class="showtime-result-summary">
+        <c:choose>
+            <c:when test="${empty showtimes}">
+                Không tìm thấy lịch chiếu phù hợp với bộ lọc hiện tại.
+            </c:when>
             <c:otherwise>
-                <p class="muted">
-                    Danh sách các suất chiếu đang mở trong hệ thống.
-                </p>
+                Tìm thấy <strong>${fn:length(showtimes)}</strong> lịch chiếu phù hợp.
             </c:otherwise>
         </c:choose>
-    </section>
+    </div>
+
 
     <section class="showtime-table">
         <c:choose>
             <c:when test="${empty showtimes}">
                 <div class="empty-showtime">
-                    Hiện chưa có lịch chiếu phù hợp.
+                    <h3>Chưa có lịch chiếu phù hợp</h3>
+                    <p>
+                        Không tìm thấy suất chiếu theo bộ lọc hiện tại. Bạn có thể chọn ngày khác,
+                        đổi phim hoặc xóa bộ lọc để xem toàn bộ lịch chiếu đang mở.
+                    </p>
+
+                    <div class="empty-actions">
+                        <a class="btn btn-primary" href="${pageContext.request.contextPath}/showtimes">
+                            Xóa bộ lọc
+                        </a>
+                    </div>
                 </div>
             </c:when>
 
             <c:otherwise>
                 <c:forEach var="item" items="${showtimes}">
                     <div class="showtime-card">
-                        <div>
+                        <div class="showtime-movie">
                             <h3>${item.movieTitle}</h3>
                             <p>${item.roomName}</p>
                         </div>
@@ -138,8 +129,9 @@
 
                         <div class="showtime-info">
                             <span>Trạng thái</span>
-                            <small>Còn vé</small>
+                            <small class="status-pill">Còn vé</small>
                         </div>
+
                         <a class="btn btn-primary"
                            href="${pageContext.request.contextPath}/booking?showtimeId=${item.id}">
                             Đặt vé

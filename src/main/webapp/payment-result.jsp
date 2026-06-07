@@ -64,6 +64,38 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .status-pending {
+            color: #f5c542;
+            background: rgba(245, 197, 66, 0.12);
+            border: 1px solid rgba(245, 197, 66, 0.45);
+        }
+
+        .status-success {
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.45);
+        }
+
+        .status-cancelled {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+        }
+
+        .status-default {
+            color: #d1d5db;
+            background: rgba(209, 213, 219, 0.12);
+            border: 1px solid rgba(209, 213, 219, 0.35);
+        }
     </style>
 </head>
 
@@ -127,12 +159,16 @@
 
             <p>
                 <span>Trạng thái đặt vé</span>
-                <strong>${paymentInfo.bookingStatus}</strong>
+                <strong class="status-badge ${paymentInfo.bookingStatusClass}">
+                    ${paymentInfo.bookingStatusText}
+                </strong>
             </p>
 
             <p>
                 <span>Trạng thái thanh toán</span>
-                <strong>${paymentInfo.paymentStatus}</strong>
+                <strong class="status-badge ${paymentInfo.paymentStatusClass}">
+                    ${paymentInfo.paymentStatusText}
+                </strong>
             </p>
         </div>
 

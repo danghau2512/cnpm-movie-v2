@@ -40,36 +40,144 @@
             text-align: right;
         }
 
-        .payment-method {
-            display: block;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--line);
-            border-radius: 0.65rem;
-            background: rgba(255,255,255,0.04);
-            cursor: pointer;
-        }
 
-        .payment-method input {
-            width: auto;
-            min-height: auto;
-            margin-right: 0.6rem;
-        }
-
-        .payment-method span {
-            font-weight: 800;
-            color: var(--gold-soft);
-        }
-
-        .payment-method p {
-            margin: 0.5rem 0 0 1.7rem;
-            color: var(--muted);
-        }
 
         .total-money {
             color: var(--gold);
             font-size: 1.5rem;
             font-weight: 900;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .status-pending {
+            color: #f5c542;
+            background: rgba(245, 197, 66, 0.12);
+            border: 1px solid rgba(245, 197, 66, 0.45);
+        }
+
+        .status-success {
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.45);
+        }
+
+        .status-cancelled {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+        }
+
+        .status-default {
+            color: #d1d5db;
+            background: rgba(209, 213, 219, 0.12);
+            border: 1px solid rgba(209, 213, 219, 0.35);
+        }
+
+
+
+        .payment-method-card:hover {
+            border-color: rgba(245, 197, 66, 0.55);
+            background: rgba(245, 197, 66, 0.06);
+            transform: translateY(-1px);
+        }
+
+
+        .payment-method-content {
+            flex: 1;
+        }
+
+        .payment-method-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .payment-method-title strong {
+            color: #f5c542;
+            font-size: 18px;
+            letter-spacing: 0.3px;
+        }
+
+        .payment-method-card p {
+            margin: 0;
+            color: #c7bfb5;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .payment-method-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 18px;
+            margin-bottom: 22px;
+        }
+
+        .payment-method-card {
+            position: relative;
+            display: block;
+            padding: 20px 22px 20px 58px;
+            border: 1px solid rgba(245, 197, 66, 0.22);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.035);
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+        }
+
+        .payment-method-card:hover {
+            border-color: rgba(245, 197, 66, 0.6);
+            background: rgba(245, 197, 66, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .payment-method-card input[type="radio"] {
+            position: absolute;
+            left: 22px;
+            top: 24px;
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            min-height: 18px !important;
+            margin: 0;
+            padding: 0;
+            accent-color: #f5c542;
+            cursor: pointer;
+        }
+
+        .payment-method-content {
+            width: 100%;
+        }
+
+        .payment-method-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .payment-method-title strong {
+            color: #f5c542;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .payment-method-card p {
+            margin: 0;
+            color: #c7bfb5;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .payment-dot {
+            display: none;
         }
 
         @media (max-width: 900px) {
@@ -100,17 +208,31 @@
             <section class="payment-box">
                 <h2>Chọn phương thức thanh toán</h2>
 
-                <label class="payment-method">
-                    <input type="radio" name="paymentMethod" value="VNPAY" checked>
-                    <span>Thanh toán VNPay</span>
-                    <p>Mô phỏng thanh toán online. Sau khi xác nhận, đơn sẽ được thanh toán thành công.</p>
-                </label>
+                <div class="payment-method-list">
+                    <label class="payment-method-card">
+                        <input type="radio" name="paymentMethod" value="VNPAY" checked>
 
-                <label class="payment-method">
-                    <input type="radio" name="paymentMethod" value="PAY_AT_COUNTER">
-                    <span>Thanh toán tại quầy</span>
-                    <p>Giữ ghế tạm thời. Khách hàng thanh toán khi đến rạp.</p>
-                </label>
+                        <div class="payment-method-content">
+                            <div class="payment-method-title">
+                                <span class="payment-dot"></span>
+                                <strong>Thanh toán VNPay</strong>
+                            </div>
+                            <p>Mô phỏng thanh toán online. Sau khi xác nhận, đơn sẽ được thanh toán thành công.</p>
+                        </div>
+                    </label>
+
+                    <label class="payment-method-card">
+                        <input type="radio" name="paymentMethod" value="PAY_AT_COUNTER">
+
+                        <div class="payment-method-content">
+                            <div class="payment-method-title">
+                                <span class="payment-dot"></span>
+                                <strong>Thanh toán tại quầy</strong>
+                            </div>
+                            <p>Giữ ghế tạm thời. Khách hàng thanh toán khi đến rạp.</p>
+                        </div>
+                    </label>
+                </div>
 
                 <button type="submit" class="btn btn-primary btn-full">
                     Xác nhận thanh toán
@@ -155,12 +277,27 @@
                     <strong>${paymentInfo.quantity}</strong>
                 </div>
 
+                <div class="summary-row">
+                    <span>Trạng thái đặt vé</span>
+                    <strong class="status-badge ${paymentInfo.bookingStatusClass}">
+                        ${paymentInfo.bookingStatusText}
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Trạng thái thanh toán</span>
+                    <strong class="status-badge ${paymentInfo.paymentStatusClass}">
+                        ${paymentInfo.paymentStatusText}
+                    </strong>
+                </div>
                 <hr>
+
 
                 <div class="summary-row">
                     <span>Tổng tiền</span>
-                    <strong class="total-money">${paymentInfo.totalText} VNĐ</strong>
+                    <strong class="total-money">${paymentInfo.totalText}</strong>
                 </div>
+
             </aside>
         </div>
     </form>
