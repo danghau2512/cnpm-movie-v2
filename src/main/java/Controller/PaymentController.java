@@ -46,16 +46,26 @@ public class PaymentController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
-        if (!paymentService.canPay(paymentInfo)) {
-            response.sendRedirect(request.getContextPath() + "/payment-result?bookingId=" + bookingId);
-            return;
-        }
-        if ("/payment".equals(path) && !paymentService.canPay(paymentInfo)) {
-            response.sendRedirect(request.getContextPath() + "/payment-result?bookingId=" + bookingId);
+        request.setAttribute("paymentInfo", paymentInfo);
+
+        if ("/payment".equals(path)) {
+            if (!paymentService.canPay(paymentInfo)) {
+                response.sendRedirect(request.getContextPath() + "/payment-result?bookingId=" + bookingId);
+                return;
+            }
+
+            request.getRequestDispatcher("/payment.jsp")
+                    .forward(request, response);
             return;
         }
 
-        request.setAttribute("paymentInfo", paymentInfo);
+        if ("/payment-result".equals(path)) {
+            request.getRequestDispatcher("/payment-result.jsp")
+                    .forward(request, response);
+            return;
+        }
+
+        response.sendRedirect(request.getContextPath() + "/home");
 
         if ("/payment".equals(path)) {
             // UC07 - 7.1.4: Nếu booking hợp lệ thì hiển thị trang payment.jsp
