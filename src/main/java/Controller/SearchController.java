@@ -43,7 +43,7 @@ public class SearchController extends HttpServlet {
 
         // UC03 - 3.1.3: Kiểm tra keyword từ request trước khi gọi service xử lý tìm kiếm
         boolean hasKeywordParam = request.getParameterMap().containsKey("keyword");
-        boolean invalidKeyword = hasKeywordParam && (keyword == null || keyword.trim().isEmpty());
+        boolean invalidKeyword = isInvalidKeyword(keyword, hasKeywordParam);
 
         if (invalidKeyword) {
             // UC03 - 3.2.0: Keyword rỗng hoặc không hợp lệ thì trả thông báo yêu cầu nhập từ khóa
@@ -86,5 +86,10 @@ public class SearchController extends HttpServlet {
         // UC03 - 3.1.11: Chuyển danh sách phim tìm được sang JSP để hiển thị kết quả tìm kiếm
         request.getRequestDispatcher("/movies.jsp")
                 .forward(request, response);
+    }
+
+    // UC03 - 3.1.3: Kiểm tra keyword không hợp lệ (rỗng hoặc chỉ chứa khoảng trắng khi có param)
+    boolean isInvalidKeyword(String keyword, boolean hasKeywordParam) {
+        return hasKeywordParam && (keyword == null || keyword.trim().isEmpty());
     }
 }

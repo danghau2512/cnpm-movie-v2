@@ -95,6 +95,7 @@ public class MovieDAO {
         );
     }
 
+    // UC03 - 3.1.9: Lấy toàn bộ danh sách phim để lọc không dấu phía Java (fallback)
     public List<Movie> findAllForSearch() {
         String sql = """
             SELECT
