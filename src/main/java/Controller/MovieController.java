@@ -11,7 +11,15 @@ import java.util.List;
 
 @WebServlet(urlPatterns = {"/movies", "/movie-detail"})
 public class MovieController extends HttpServlet {
-    private final MovieService movieService = new MovieService();
+    private final MovieService movieService;
+
+    public MovieController() {
+        this(new MovieService());
+    }
+
+    public MovieController(MovieService movieService) {
+        this.movieService = movieService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

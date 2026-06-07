@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MovieService {
-    private final MovieDAO movieDAO = new MovieDAO();
+    private final MovieDAO movieDAO;
+
+    public MovieService() {
+        this(new MovieDAO());
+    }
+
+    public MovieService(MovieDAO movieDAO) {
+        this.movieDAO = movieDAO;
+    }
 
     public List<Movie> getNowShowingMovies() {
         return movieDAO.findAllNowShowing();
