@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 public class PaymentInfo {
+    private java.time.LocalDateTime holdExpiresAt;
+
+    public java.time.LocalDateTime getHoldExpiresAt() { return holdExpiresAt; }
+    public void setHoldExpiresAt(java.time.LocalDateTime value) { holdExpiresAt = value; }
     private int bookingId;
     private int userId;
     private String bookingCode;

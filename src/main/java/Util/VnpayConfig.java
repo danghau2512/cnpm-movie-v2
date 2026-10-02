@@ -9,6 +9,6 @@ public class VnpayConfig {
     // UC07: Cấu hình VNPay Sandbox dùng để kiểm thử thanh toán online
     public static final String VNP_PAY_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 
-    public static final String VNP_TMN_CODE = "D34T0AX1";
-        public static final String VNP_HASH_SECRET = "1K73R7995S1DR6ANULURF96ECK5MSPQ9";
+    public static final String VNP_TMN_CODE = "QW9FRZ1B";
+        public static final String VNP_HASH_SECRET = "QPMKCGTFQTXVSFWYYJLOFIIFLKDXFAYQ";
 }

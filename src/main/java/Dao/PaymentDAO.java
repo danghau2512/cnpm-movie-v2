@@ -24,6 +24,7 @@ public class PaymentDAO {
                     DATE_FORMAT(st.start_time, '%H:%i') AS showTime,
                     GROUP_CONCAT(se.seat_code ORDER BY se.seat_row, se.seat_number SEPARATOR ', ') AS seats,
                     b.quantity,
+                    b.hold_expires_at AS holdExpiresAt,
                     b.total_amount AS totalAmount,
                     FORMAT(b.total_amount, 0) AS totalText,
                     CASE WHEN b.booking_status='PENDING' AND b.payment_status='UNPAID' AND b.hold_expires_at<=NOW()

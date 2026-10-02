@@ -9,6 +9,25 @@ import java.lang.reflect.Method;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PaymentServiceTest {
+    @Test
+    void createVnpayUrlIncludesActualBookingExpiry() {
+        Dao.PaymentDAO dao = org.mockito.Mockito.mock(Dao.PaymentDAO.class);
+        jakarta.servlet.http.HttpServletRequest request = org.mockito.Mockito.mock(jakarta.servlet.http.HttpServletRequest.class);
+        PaymentInfo info = new PaymentInfo();
+        info.setBookingStatus("PENDING"); info.setPaymentStatus("UNPAID");
+        info.setBookingCode("BK_TEST"); info.setTotalAmount(new java.math.BigDecimal("90000"));
+        info.setHoldExpiresAt(java.time.LocalDateTime.of(2026, 10, 3, 12, 10));
+        org.mockito.Mockito.when(dao.findPaymentInfo(15)).thenReturn(info);
+        org.mockito.Mockito.when(request.getScheme()).thenReturn("http");
+        org.mockito.Mockito.when(request.getServerName()).thenReturn("localhost");
+        org.mockito.Mockito.when(request.getServerPort()).thenReturn(8080);
+        org.mockito.Mockito.when(request.getContextPath()).thenReturn("/cinebook");
+        org.mockito.Mockito.when(request.getRemoteAddr()).thenReturn("127.0.0.1");
+        String url = new PaymentService(dao).createVnpayPaymentUrl(15, request);
+        assertTrue(url.contains("vnp_ExpireDate=20261003121000"));
+        assertTrue(url.contains("vnp_Amount=9000000"));
+        org.mockito.Mockito.verify(dao).createVnpayPendingPayment(org.mockito.ArgumentMatchers.eq(15), org.mockito.ArgumentMatchers.startsWith("15_"));
+    }
 
     @Test
     void canPay_WithPendingBookingAndUnpaidPayment_ShouldReturnTrue() {

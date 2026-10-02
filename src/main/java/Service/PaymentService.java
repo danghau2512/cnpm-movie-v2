@@ -34,6 +34,9 @@ public class PaymentService {
         checkPayableBooking(info);
 
 // UC07 - 7.1.7: Tạo returnUrl để VNPay redirect kết quả về hệ thống
+        if (info.getHoldExpiresAt() == null) {
+            throw new IllegalArgumentException("Đơn đặt vé không có thời hạn giữ ghế hợp lệ.");
+        }
         String returnUrl = request.getScheme() + "://"
                 + request.getServerName()
                 + ":"
@@ -62,6 +65,9 @@ public class PaymentService {
         params.put("vnp_ReturnUrl", returnUrl);
         params.put("vnp_IpAddr", VnpayUtil.getIpAddress(request));
         params.put("vnp_CreateDate", VnpayUtil.getCurrentDate());
+        // Dùng cùng thời hạn với booking, không gia hạn giữ ghế khi mở lại trang thanh toán.
+        params.put("vnp_ExpireDate", info.getHoldExpiresAt()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
 // UC07 - 7.1.9: Tạo tham số ký số và sinh URL thanh toán VNPay Sandbox
         return VnpayUtil.buildPaymentUrl(params);
     }
