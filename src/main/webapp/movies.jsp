@@ -153,7 +153,7 @@
 
         <c:choose>
             <c:when test="${not empty keyword}">
-                <h1>Kết quả cho: &ldquo;${keyword}&rdquo;</h1>
+                <h1>Kết quả cho: &ldquo;<c:out value="${keyword}"/>&rdquo;</h1>
                 <p class="muted">
                     Tìm thấy <strong>${movies.size()}</strong> phim phù hợp.
                 </p>
@@ -176,8 +176,8 @@
                     <div class="genre-tags">
                         <c:forEach var="genre" items="${suggestedGenres}">
                             <a class="genre-tag"
-                               href="${pageContext.request.contextPath}/search?keyword=${genre}">
-                                    ${genre}
+                               href="${pageContext.request.contextPath}/search?keyword=<c:out value="${genre}"/>">
+                                    <c:out value="${genre}"/>
                             </a>
                         </c:forEach>
                     </div>
@@ -221,19 +221,19 @@
             <c:otherwise>
                 <%-- UC03 - 3.1.12: Duyệt danh sách phim phù hợp và hiển thị lên giao diện --%>
                 <c:forEach var="movie" items="${movies}">
-                    <div class="movie-card" data-movie-card data-genre="${movie.genreNames}"
-                         data-rating="${movie.ageRating}" data-status="${movie.status}">
+                    <div class="movie-card" data-movie-card data-genre="<c:out value="${movie.genreNames}"/>"
+                         data-rating="<c:out value="${movie.ageRating}"/>" data-status="${movie.status}">
                         <div class="movie-poster">
-                            <span class="age-tag">${movie.ageRating}</span>
+                            <span class="age-tag"><c:out value="${movie.ageRating}"/></span>
 
                             <c:choose>
                                 <c:when test="${not empty movie.posterUrl}">
-                                    <img src="${movie.posterUrl}" alt="${movie.title}" class="movie-poster-img">
+                                    <img src="<c:out value="${movie.posterUrl}"/>" alt="<c:out value="${movie.title}"/>" class="movie-poster-img">
                                 </c:when>
 
                                 <c:otherwise>
                                     <div class="poster-placeholder">
-                                        <h3>${movie.title}</h3>
+                                        <h3><c:out value="${movie.title}"/></h3>
                                     </div>
                                 </c:otherwise>
                             </c:choose>
@@ -248,11 +248,11 @@
                                 </c:otherwise>
                             </c:choose>
 
-                            <h3>${movie.title}</h3>
+                            <h3><c:out value="${movie.title}"/></h3>
 
                             <p>Thời lượng: ${movie.durationMinutes} phút</p>
-                            <p>Độ tuổi: ${movie.ageRating}</p>
-                            <p>Thể loại: ${movie.genreNames}</p>
+                            <p>Độ tuổi: <c:out value="${movie.ageRating}"/></p>
+                            <p>Thể loại: <c:out value="${movie.genreNames}"/></p>
 
                             <div class="movie-actions">
                                     <%-- UC04 - 4.1.0:
@@ -260,7 +260,7 @@
                                      Chỉ phim NOW_SHOWING mới được phép đi tới /movie-detail?id={movieId}. --%>
                                 <c:if test="${movie.status == 'NOW_SHOWING'}">
                                     <a class="btn btn-ghost"
-                                       href="${pageContext.request.contextPath}/movie-detail?id=${movie.id}&keyword=${keyword}">
+                                       href="${pageContext.request.contextPath}/movie-detail?id=${movie.id}&keyword=<c:out value="${keyword}"/>">
                                         Chi tiết
                                     </a>
                                 </c:if>

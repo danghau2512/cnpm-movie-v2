@@ -252,12 +252,12 @@
 
                 <div class="summary-line">
                     <span>Phim</span>
-                    <strong>${showtime.movieTitle}</strong>
+                    <strong><c:out value="${showtime.movieTitle}"/></strong>
                 </div>
 
                 <div class="summary-line">
                     <span>Phòng</span>
-                    <strong>${showtime.roomName}</strong>
+                    <strong><c:out value="${showtime.roomName}"/></strong>
                 </div>
 
                 <div class="summary-line">

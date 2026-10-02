@@ -142,7 +142,7 @@
 <main class="page-shell">
     <section class="page-title">
         <p class="eyebrow">UC04 - Xem chi tiết phim</p>
-        <h1>${movie.title}</h1>
+        <h1><c:out value="${movie.title}"/></h1>
         <p class="muted">
             Xem thông tin chi tiết của phim trước khi chọn lịch chiếu và đặt vé.
         </p>
@@ -155,7 +155,7 @@
          Nếu posterUrl rỗng thì chuyển sang luồng A4. --%>
             <c:choose>
                 <c:when test="${not empty movie.posterUrl}">
-                    <img src="${movie.posterUrl}" alt="${movie.title}">
+                    <img src="<c:out value="${movie.posterUrl}"/>" alt="<c:out value="${movie.title}"/>">
                 </c:when>
 
                 <c:otherwise>
@@ -164,14 +164,14 @@
                         <span>
                             <c:choose>
                                 <c:when test="${not empty movie.ageRating}">
-                                    ${movie.ageRating}
+                                    <c:out value="${movie.ageRating}"/>
                                 </c:when>
                                 <c:otherwise>
                                     Chưa phân loại
                                 </c:otherwise>
                             </c:choose>
                         </span>
-                        <h2>${movie.title}</h2>
+                        <h2><c:out value="${movie.title}"/></h2>
                     </div>
                 </c:otherwise>
             </c:choose>
@@ -180,7 +180,7 @@
         <div class="detail-content">
             <%-- UC04 - 4.1.9:
          Hiển thị tên phim, mô tả ngắn và nội dung chi tiết của phim. --%>
-            <h2>${movie.title}</h2>
+            <h2><c:out value="${movie.title}"/></h2>
 
             <div class="meta detail-meta">
                 <%-- UC04 - 4.1.9: Hiển thị thời lượng, độ tuổi, thể loại và ngày khởi chiếu của phim --%>
@@ -189,7 +189,7 @@
                             <span>
                     <c:choose>
                         <c:when test="${not empty movie.ageRating}">
-                            ${movie.ageRating}
+                            <c:out value="${movie.ageRating}"/>
                         </c:when>
                         <c:otherwise>
                             Chưa phân loại độ tuổi
@@ -202,7 +202,7 @@
                     <%-- UC04 - A6: Nếu phim chưa được gán thể loại thì hiển thị "Chưa phân loại". --%>
                     <c:choose>
                         <c:when test="${not empty movie.genreNames}">
-                            ${movie.genreNames}
+                            <c:out value="${movie.genreNames}"/>
                         </c:when>
                         <c:otherwise>
                             Chưa phân loại
@@ -226,7 +226,7 @@
             <p class="muted">
                 <c:choose>
                     <c:when test="${not empty movie.shortDescription}">
-                        ${movie.shortDescription}
+                        <c:out value="${movie.shortDescription}"/>
                     </c:when>
                     <c:otherwise>
                         Chưa có mô tả ngắn cho phim này.
@@ -238,7 +238,7 @@
             <p class="muted movie-description">
                 <c:choose>
                     <c:when test="${not empty movie.description}">
-                        ${movie.description}
+                        <c:out value="${movie.description}"/>
                     </c:when>
                     <c:otherwise>
                         Chưa có nội dung chi tiết cho phim này.
@@ -260,7 +260,7 @@
                 <c:if test="${not empty movie.trailerUrl}">
                     <button type="button"
                             class="btn btn-ghost"
-                            onclick="openTrailer('${movie.trailerUrl}')">
+                            data-trailer="<c:out value="${movie.trailerUrl}"/>" onclick="openTrailer(this.dataset.trailer)">
                         Trailer
                     </button>
                 </c:if>
@@ -272,7 +272,7 @@
                 <c:choose>
                     <c:when test="${not empty keyword}">
                         <a class="btn btn-ghost"
-                           href="${pageContext.request.contextPath}/movies?keyword=${keyword}">
+                           href="${pageContext.request.contextPath}/movies?keyword=<c:out value="${keyword}"/>">
                             Quay lại danh sách
                         </a>
                     </c:when>

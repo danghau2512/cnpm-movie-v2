@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PaymentService {
-    private final PaymentDAO paymentDAO = new PaymentDAO();
+    private final PaymentDAO paymentDAO;
+    public PaymentService() { this(new PaymentDAO()); }
+    public PaymentService(PaymentDAO paymentDAO) { this.paymentDAO = paymentDAO; }
 
     public PaymentInfo getPaymentInfo(int bookingId) {
         return paymentDAO.findPaymentInfo(bookingId);
@@ -85,11 +87,11 @@ public class PaymentService {
         if (transactionCode == null || transactionCode.trim().isEmpty()) {
             transactionCode = txnRef;
         }
-        if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
-            paymentDAO.confirmVnpayPayment(bookingId, transactionCode);
-        } else {
-            paymentDAO.failVnpayPayment(bookingId, transactionCode);
-        }
+        BigDecimal callbackAmount;
+        try { callbackAmount = new BigDecimal(params.getOrDefault("vnp_Amount", "")); }
+        catch (NumberFormatException e) { throw new IllegalArgumentException("Số tiền VNPay không hợp lệ."); }
+        paymentDAO.processVnpayReturn(bookingId, txnRef, callbackAmount, transactionCode,
+                "00".equals(responseCode) && "00".equals(transactionStatus));
 
         return bookingId;
     }

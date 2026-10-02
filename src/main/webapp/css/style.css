@@ -727,3 +727,6 @@ button.seat {
 
 
 }
+
+/* Liên kết lịch sử và quản trị trong header dùng chung. */
+@media (max-width: 1500px) { .site-header { height:auto; min-height:82px; flex-wrap:wrap; padding:16px 4%; gap:16px; } .header-actions { flex-wrap:wrap; } }

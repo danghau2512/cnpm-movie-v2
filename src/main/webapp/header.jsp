@@ -11,7 +11,7 @@
                 type="search"
                 name="keyword"
                 placeholder="Nhập tên phim hoặc thể loại..."
-                value="${param.keyword}">
+                value="<c:out value="${param.keyword}"/>">
         <%-- UC03 - 3.1.2: Form gửi keyword đến SearchController qua route /search để xử lý tìm kiếm --%>
         <button type="submit" class="search-btn">Tìm</button>
     </form>
@@ -29,8 +29,13 @@
         <c:choose>
             <c:when test="${not empty sessionScope.currentUser}">
                 <span class="user-name">
-                    Xin chào, ${sessionScope.currentUser.fullName}
+                    Xin chào, <c:out value="${sessionScope.currentUser.fullName}"/>
                 </span>
+
+                <a class="btn btn-ghost" href="${pageContext.request.contextPath}/booking-history">Lịch sử đặt vé</a>
+                <c:if test="${sessionScope.currentUser.role eq 'ADMIN'}">
+                    <a class="btn btn-ghost" href="${pageContext.request.contextPath}/admin/dashboard">Quản trị</a>
+                </c:if>
 
                 <a class="btn btn-ghost" href="${pageContext.request.contextPath}/logout">
                     Đăng xuất

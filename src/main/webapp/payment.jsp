@@ -249,12 +249,12 @@
 
                 <div class="summary-row">
                     <span>Phim</span>
-                    <strong>${paymentInfo.movieTitle}</strong>
+                    <strong><c:out value="${paymentInfo.movieTitle}"/></strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Phòng</span>
-                    <strong>${paymentInfo.roomName}</strong>
+                    <strong><c:out value="${paymentInfo.roomName}"/></strong>
                 </div>
 
                 <div class="summary-row">

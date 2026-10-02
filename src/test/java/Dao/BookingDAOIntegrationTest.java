@@ -232,6 +232,7 @@ class BookingDAOIntegrationTest {
                                 SELECT id
                                 FROM showtimes
                                 WHERE status = 'OPEN'
+                                AND start_time > NOW()
                                 LIMIT 1
                                 """)
                         .mapTo(Integer.class)

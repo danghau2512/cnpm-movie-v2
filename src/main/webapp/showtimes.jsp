@@ -41,7 +41,7 @@
                     <option value="">Tất cả phim</option>
                     <c:forEach var="movie" items="${movies}">
                         <option value="${movie.id}" ${movieId == movie.id ? 'selected="selected"' : ''}>
-                            ${movie.title}
+                            <c:out value="${movie.title}"/>
                         </option>
                     </c:forEach>
                 </select>
@@ -52,8 +52,8 @@
                 <select id="genreName" name="genreName">
                     <option value="">Tất cả thể loại</option>
                     <c:forEach var="genre" items="${genres}">
-                        <option value="${genre}" ${genreName == genre ? 'selected="selected"' : ''}>
-                            ${genre}
+                        <option value="<c:out value="${genre}"/>" ${genreName == genre ? 'selected="selected"' : ''}>
+                            <c:out value="${genre}"/>
                         </option>
                     </c:forEach>
                 </select>
@@ -108,8 +108,8 @@
                 <c:forEach var="item" items="${showtimes}">
                     <div class="showtime-card">
                         <div class="showtime-movie">
-                            <h3>${item.movieTitle}</h3>
-                            <p>${item.roomName}</p>
+                            <h3><c:out value="${item.movieTitle}"/></h3>
+                            <p><c:out value="${item.roomName}"/></p>
                         </div>
 
                         <div class="showtime-info">

@@ -117,6 +117,12 @@
                 </p>
             </c:when>
 
+            <c:when test="${paymentInfo.bookingStatus eq 'CANCELLED' or paymentInfo.paymentStatus eq 'FAILED'}">
+                <div class="result-icon">!</div>
+                <h1>Đơn đặt vé đã hủy hoặc hết hạn</h1>
+                <p class="muted">Ghế không còn được giữ. Bạn có thể chọn lịch chiếu để đặt vé mới.</p>
+            </c:when>
+
             <c:otherwise>
                 <div class="result-icon">!</div>
                 <h1>Đặt vé thành công</h1>
@@ -134,7 +140,7 @@
 
             <p>
                 <span>Phim</span>
-                <strong>${paymentInfo.movieTitle}</strong>
+                <strong><c:out value="${paymentInfo.movieTitle}"/></strong>
             </p>
 
             <p>
@@ -144,17 +150,17 @@
 
             <p>
                 <span>Phòng</span>
-                <strong>${paymentInfo.roomName}</strong>
+                <strong><c:out value="${paymentInfo.roomName}"/></strong>
             </p>
 
             <p>
                 <span>Ghế</span>
-                <strong>${paymentInfo.seats}</strong>
+                <strong><c:out value="${paymentInfo.seats}" default="Ghế đã được giải phóng"/></strong>
             </p>
 
             <p>
                 <span>Tổng tiền</span>
-                <strong>${paymentInfo.totalText} VNĐ</strong>
+                <strong>${paymentInfo.totalText}</strong>
             </p>
 
             <p>
@@ -173,6 +179,7 @@
         </div>
 
         <div class="result-actions">
+            <a class="btn btn-ghost" href="${pageContext.request.contextPath}/booking-history">Lịch sử đặt vé</a>
             <a class="btn btn-primary" href="${pageContext.request.contextPath}/home">
                 Về trang chủ
             </a>

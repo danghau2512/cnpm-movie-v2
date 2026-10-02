@@ -13,7 +13,9 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = {"/payment", "/payment-result", "/vnpay-return"})
 public class PaymentController extends HttpServlet {
-    private final PaymentService paymentService = new PaymentService();
+    private final PaymentService paymentService;
+    public PaymentController() { this(new PaymentService()); }
+    public PaymentController(PaymentService paymentService) { this.paymentService = paymentService; }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -67,14 +69,6 @@ public class PaymentController extends HttpServlet {
 
         response.sendRedirect(request.getContextPath() + "/home");
 
-        if ("/payment".equals(path)) {
-            // UC07 - 7.1.4: Nếu booking hợp lệ thì hiển thị trang payment.jsp
-            request.getRequestDispatcher("/payment.jsp")
-                    .forward(request, response);
-        } else {
-            request.getRequestDispatcher("/payment-result.jsp")
-                    .forward(request, response);
-        }
     }
 
     @Override
@@ -111,7 +105,10 @@ public class PaymentController extends HttpServlet {
 // UC07 - 7.2.7: Gọi service xử lý thanh toán tại quầy
 // UC07 - 7.2.9: Chuyển sang trang kết quả thanh toán
         if ("PAY_AT_COUNTER".equals(method)) {
-            paymentService.processPayAtCounter(bookingId);
+            try { paymentService.processPayAtCounter(bookingId); }
+            catch (IllegalArgumentException | IllegalStateException e) {
+                response.sendRedirect(request.getContextPath() + "/payment-result?bookingId=" + bookingId); return;
+            }
             response.sendRedirect(request.getContextPath() + "/payment-result?bookingId=" + bookingId);
             return;
         }
@@ -120,8 +117,10 @@ public class PaymentController extends HttpServlet {
 // UC07 - 7.1.7: Gọi service tạo URL thanh toán VNPay Sandbox
 // UC07 - 7.1.9: Redirect khách hàng sang cổng thanh toán test
         if ("VNPAY".equals(method)) {
-            String paymentUrl = paymentService.createVnpayPaymentUrl(bookingId, request);
-            response.sendRedirect(paymentUrl);
+            try { response.sendRedirect(paymentService.createVnpayPaymentUrl(bookingId, request)); }
+            catch (IllegalArgumentException | IllegalStateException e) {
+                response.sendRedirect(request.getContextPath() + "/payment-result?bookingId=" + bookingId);
+            }
             return;
         }
 

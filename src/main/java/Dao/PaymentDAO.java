@@ -8,7 +8,9 @@ import org.jdbi.v3.core.mapper.reflect.BeanMapper;
 import java.math.BigDecimal;
 
 public class PaymentDAO {
-    private final Jdbi jdbi = JdbiConnector.getJdbi();
+    private final Jdbi jdbi;
+    public PaymentDAO() { this(JdbiConnector.getJdbi()); }
+    public PaymentDAO(Jdbi jdbi) { this.jdbi = jdbi; }
 
     public PaymentInfo findPaymentInfo(int bookingId) {
         String sql = """
@@ -24,19 +26,21 @@ public class PaymentDAO {
                     b.quantity,
                     b.total_amount AS totalAmount,
                     FORMAT(b.total_amount, 0) AS totalText,
-                    b.booking_status AS bookingStatus,
-                    b.payment_status AS paymentStatus
+                    CASE WHEN b.booking_status='PENDING' AND b.payment_status='UNPAID' AND b.hold_expires_at<=NOW()
+                         THEN 'CANCELLED' ELSE b.booking_status END AS bookingStatus,
+                    CASE WHEN b.booking_status='PENDING' AND b.payment_status='UNPAID' AND b.hold_expires_at<=NOW()
+                         THEN 'FAILED' ELSE b.payment_status END AS paymentStatus
                 FROM bookings b
                 JOIN showtimes st ON b.showtime_id = st.id
                 JOIN movies m ON st.movie_id = m.id
                 JOIN rooms r ON st.room_id = r.id
-                JOIN booking_seats bs ON b.id = bs.booking_id
-                JOIN seats se ON bs.seat_id = se.id
+                LEFT JOIN booking_seats bs ON b.id = bs.booking_id
+                LEFT JOIN seats se ON bs.seat_id = se.id
                 WHERE b.id = :bookingId
                 GROUP BY
                     b.id, b.user_id, b.booking_code, m.title, r.name,
                     st.start_time, b.quantity, b.total_amount,
-                    b.booking_status, b.payment_status
+                    b.booking_status, b.payment_status, b.hold_expires_at
                 """;
 
         return jdbi.withHandle(handle ->
@@ -57,6 +61,7 @@ public class PaymentDAO {
     // UC07 - 7.2.8: Cập nhật booking sang PENDING và payment_status = UNPAID
     public void payAtCounter(int bookingId) {
         jdbi.useTransaction(handle -> {
+            lockPayableBooking(handle, bookingId);
             BigDecimal amount = handle.createQuery("""
                             SELECT total_amount
                             FROM bookings
@@ -144,6 +149,7 @@ public class PaymentDAO {
     // UC07 - 7.1.8: Cập nhật booking sang trạng thái PENDING và UNPAID
     public void createVnpayPendingPayment(int bookingId, String vnpTxnRef) {
         jdbi.useTransaction(handle -> {
+            lockPayableBooking(handle, bookingId);
             java.math.BigDecimal amount = handle.createQuery("""
                         SELECT total_amount
                         FROM bookings
@@ -229,6 +235,36 @@ public class PaymentDAO {
                         """)
                     .bind("bookingId", bookingId)
                     .execute();
+        });
+    }
+
+    private void lockPayableBooking(org.jdbi.v3.core.Handle handle, int bookingId) {
+        boolean payable = handle.createQuery("""
+                SELECT (booking_status='PENDING' AND payment_status='UNPAID' AND hold_expires_at>NOW())
+                FROM bookings WHERE id=:id FOR UPDATE
+                """).bind("id", bookingId).mapTo(Boolean.class).findOne().orElse(false);
+        if (!payable) throw new IllegalArgumentException("Đơn đã hết hạn, đã hủy hoặc đã thanh toán.");
+    }
+
+    public void processVnpayReturn(int bookingId, String txnRef, BigDecimal amount, String code, boolean success) {
+        jdbi.useTransaction(h -> {
+            lockPayableBooking(h, bookingId);
+            BigDecimal expected = h.createQuery("""
+                    SELECT amount FROM payments WHERE booking_id=:id AND payment_method='VNPAY'
+                    AND payment_status='PENDING' AND transaction_code=:ref FOR UPDATE
+                    """).bind("id", bookingId).bind("ref", txnRef).mapTo(BigDecimal.class).findOne()
+                    .orElseThrow(() -> new IllegalArgumentException("Giao dịch không còn hợp lệ."));
+            if (amount == null || expected.multiply(BigDecimal.valueOf(100)).compareTo(amount) != 0)
+                throw new IllegalArgumentException("Số tiền thanh toán không khớp.");
+            h.createUpdate("""
+                    UPDATE payments SET payment_status=:status, paid_at=CASE WHEN :success THEN NOW() ELSE NULL END,
+                    transaction_code=:code WHERE booking_id=:id AND transaction_code=:ref AND payment_status='PENDING'
+                    """).bind("status", success ? "SUCCESS" : "FAILED").bind("success", success).bind("code", code)
+                    .bind("id", bookingId).bind("ref", txnRef).execute();
+            h.createUpdate("UPDATE bookings SET booking_status=:status,payment_status=:payment,hold_expires_at=NULL WHERE id=:id")
+                    .bind("status", success ? "CONFIRMED" : "CANCELLED").bind("payment", success ? "PAID" : "FAILED")
+                    .bind("id", bookingId).execute();
+            if (!success) h.createUpdate("DELETE FROM booking_seats WHERE booking_id=:id").bind("id", bookingId).execute();
         });
     }
 }

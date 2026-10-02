@@ -35,6 +35,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
 
     testImplementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.34'
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.1.34'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -43,6 +45,7 @@ tasks.withType(JavaCompile).configureEach {
 
 test {
     useJUnitPlatform()
+    systemProperty 'cinebook.integration', System.getProperty('cinebook.integration', 'false')
 }
 
 war {

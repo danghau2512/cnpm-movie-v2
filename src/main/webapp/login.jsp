@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -30,12 +31,13 @@
     <section class="auth-card">
         <p class="eyebrow">UC02 - Đăng nhập</p>
         <h1>Chào mừng trở lại</h1>
+        <c:if test="${param.registered eq '1'}"><p role="status">Đăng ký thành công. Vui lòng đăng nhập.</p></c:if>
 
         <form id="loginForm" action="${pageContext.request.contextPath}/login" method="post">
             <label>Email
                 <input type="email" name="email" id="loginEmail"
                        placeholder="student@example.com"
-                       value="${email}" required>
+                       value="<c:out value="${email}"/>" required>
             </label>
 
             <label>Mật khẩu
@@ -43,7 +45,7 @@
                        placeholder="Mật khẩu của bạn" required>
             </label>
 
-            <p id="loginMessage" class="form-message">${error}</p>
+            <p id="loginMessage" class="form-message"><c:out value="${error}"/></p>
 
             <button class="btn btn-primary btn-full" type="submit">Đăng nhập</button>
         </form>

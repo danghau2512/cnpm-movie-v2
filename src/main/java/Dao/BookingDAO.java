@@ -7,7 +7,9 @@ import org.jdbi.v3.core.Jdbi;
 import java.util.List;
 
 public class BookingDAO {
-    private final Jdbi jdbi = JdbiConnector.getJdbi();
+    private final Jdbi jdbi;
+    public BookingDAO() { this(JdbiConnector.getJdbi()); }
+    public BookingDAO(Jdbi jdbi) { this.jdbi = jdbi; }
 
     private static final int SEAT_HOLD_TIMEOUT_MINUTES = 10;
 
@@ -29,6 +31,8 @@ public class BookingDAO {
                                 FROM showtimes
                                 WHERE id = :showtimeId
                                 AND status = 'OPEN'
+                                AND start_time > NOW()
+                                FOR UPDATE
                                 """)
                         .bind("showtimeId", showtimeId)
                         .mapTo(Long.class)

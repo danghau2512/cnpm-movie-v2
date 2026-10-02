@@ -8,9 +8,11 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/login", "/logout"})
+@WebServlet(urlPatterns = {"/login", "/logout", "/register"})
 public class AuthController extends HttpServlet {
-    private final AuthService authService = new AuthService();
+    private final AuthService authService;
+    public AuthController() { this(new AuthService()); }
+    public AuthController(AuthService authService) { this.authService = authService; }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -18,7 +20,9 @@ public class AuthController extends HttpServlet {
 
         String path = request.getServletPath();
 
-        if ("/login".equals(path)) {
+        if ("/register".equals(path)) {
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
+        } else if ("/login".equals(path)) {
             request.getRequestDispatcher("/login.jsp")
                     .forward(request, response);
         } else if ("/logout".equals(path)) {
@@ -36,6 +40,22 @@ public class AuthController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
+        if ("/register".equals(request.getServletPath())) {
+            try {
+                authService.register(request.getParameter("fullName"), request.getParameter("email"),
+                        request.getParameter("phone"), request.getParameter("password"), request.getParameter("confirmPassword"));
+                response.sendRedirect(request.getContextPath() + "/login?registered=1");
+            } catch (IllegalArgumentException e) {
+                request.setAttribute("error", e.getMessage());
+                request.getRequestDispatcher("/register.jsp").forward(request, response);
+            } catch (RuntimeException e) {
+                log("Registration failed", e);
+                request.setAttribute("error", "Không thể đăng ký lúc này. Vui lòng thử lại.");
+                request.getRequestDispatcher("/register.jsp").forward(request, response);
+            }
+            return;
+        }
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
@@ -50,6 +70,8 @@ public class AuthController extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
+        request.changeSessionId();
+        user.setPasswordHash(null);
         session.setAttribute("currentUser", user);
 
         if ("ADMIN".equals(user.getRole())) {
