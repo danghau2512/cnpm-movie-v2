@@ -1,0 +1,6 @@
+/target/
+/evidence/
+/screenshots/
+/.idea/
+*.iml
+.env
