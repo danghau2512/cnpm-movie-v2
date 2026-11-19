@@ -1,3 +1,4 @@
 # Tiện ích dùng chung
 
-Nhóm đặt các tiện ích chờ, chụp ảnh minh chứng, đọc dữ liệu ở đây khi cần.
+`TestConfig` đọc cấu hình riêng; `FlowEvidence` lưu ảnh và kết quả từng bước vào `target/evidence/`.
+Nhóm có thể bổ sung tiện ích cho testcase của mình ở đây.

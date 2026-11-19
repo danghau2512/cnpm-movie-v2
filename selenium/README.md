@@ -2,7 +2,12 @@
 
 Repo: https://github.com/danghau2512/cnpm-movie-v2
 
-Khung này chỉ có cấu hình và thư mục. Nhóm tự viết test case, không có test CineBook viết sẵn.
+**Bắt đầu tại [hướng dẫn từ pull code đến chạy test](HUONG-DAN-PULL-VA-CHAY.md).** Có đủ bước import DB,
+tạo file cấu hình web, nhận file Notepad, chạy web và chạy từng F hoặc full.
+
+Đã có lớp Selenium luồng chính riêng ngay trong từng thư mục `tests/f01` … `tests/f08`.
+Xem [MAIN-FLOWS.md](MAIN-FLOWS.md) để cấu hình tài khoản, chạy demo và đối chiếu Sheet.
+Testcase chi tiết của từng chức năng vẫn do thành viên phụ trách viết trong `tests/f01` … `tests/f08`.
 
 ## Viết test ở đâu?
 
@@ -22,8 +27,9 @@ Các đường dẫn dưới đây tính từ thư mục `selenium/`:
 Các thành phần chung trong `src/test/java/com/cinebook/`:
 
 - `base/BaseTest.java`: mở/đóng Chrome, URL, WebDriverWait. Không tự đăng nhập hoặc sửa DB.
-- `pages/`: nhóm tự viết Page Objects.
-- `utils/`: nhóm tự thêm tiện ích và chụp minh chứng.
+- `pages/`: Page Objects dùng chung cho đăng nhập, tìm phim, lịch, ghế, thanh toán và quản trị.
+- `utils/`: đọc cấu hình tài khoản riêng và chụp minh chứng từng bước.
+- `tests/f01/` … `tests/f08/`: mỗi thư mục có lớp `Fxx...MainTest` để chạy luồng chính riêng; thành viên bổ sung testcase chi tiết tại đây.
 
 `src/test/resources/selenium.properties`: cấu hình URL và headless.
 `src/test/resources/testdata/`: dữ liệu nhóm tự chuẩn bị theo Sheet.

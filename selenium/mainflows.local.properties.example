@@ -1,0 +1,16 @@
+# Copy to mainflows.local.properties; that file is ignored by Git.
+baseUrl=http://localhost:8080/CineBook_war_exploded
+headless=false
+
+# Three existing ACTIVE accounts: one ADMIN and two different CUSTOMERs.
+flow.admin.email=YOUR_ADMIN_EMAIL
+flow.admin.password=YOUR_ADMIN_PASSWORD
+flow.customer.email=YOUR_CUSTOMER_A_EMAIL
+flow.customer.password=YOUR_CUSTOMER_A_PASSWORD
+flow.otherCustomer.email=YOUR_CUSTOMER_B_EMAIL
+flow.otherCustomer.password=YOUR_CUSTOMER_B_PASSWORD
+
+# Existing ACTIVE room with seats. The flow finds an unoccupied future day.
+flow.roomId=1
+flow.daysAhead=14
+flow.screenshots=true
