@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-/** JVM properties > environment variables > ignored local file > shared defaults. */
+/** JVM properties > environment variables > configuration file > shared defaults. */
 public final class TestConfig {
     private final Properties values = new Properties();
 

@@ -43,15 +43,15 @@ Ví dụ từ thư mục gốc repo:
 
 1. Chạy Tomcat/MySQL với DB thử đã import SQL dự án, có thể truy cập web bình thường.
 2. Chuẩn bị tài khoản ADMIN/ACTIVE và CUSTOMER/ACTIVE; riêng F08 cần hai Customer khác nhau.
-3. Sao chép và điền file cấu hình:
+3. Repo đã có file cấu hình tài khoản test. Mở để kiểm tra URL/tài khoản nếu máy mình khác:
 
 ```powershell
-Copy-Item .\selenium\mainflows.local.properties.example .\selenium\mainflows.local.properties
 notepad .\selenium\mainflows.local.properties
 ```
 
 Điền URL, email/mật khẩu tài khoản thử, phòng ACTIVE có ghế (`flow.roomId`, mặc định 1).
-File cấu hình riêng bị Git bỏ qua. Không commit mật khẩu vào lớp test.
+File cấu hình test dùng chung được commit theo yêu cầu của nhóm. Chỉ dùng với DB thử;
+nếu cần cấu hình riêng, đặt ngoài repo rồi truyền bằng `-ConfigFile` để không ghi đè bản chung.
 Cần JDK 17+ và Chrome; Maven Wrapper nằm trong repo.
 Trong IntelliJ, Add as Maven Project cho `selenium/pom.xml`, rồi Run lớp trong `f01` … `f08`.
 Working directory là `selenium`; nếu dùng thư mục khác, đặt VM option

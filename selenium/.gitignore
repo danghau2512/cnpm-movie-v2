@@ -4,4 +4,3 @@
 /.idea/
 *.iml
 .env
-/mainflows.local.properties

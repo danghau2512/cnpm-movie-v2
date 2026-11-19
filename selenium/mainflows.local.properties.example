@@ -1,4 +1,4 @@
-# Copy to mainflows.local.properties; that file is ignored by Git.
+# Template for a different local setup; the repo already includes the team's test configuration.
 baseUrl=http://localhost:8080/CineBook_war_exploded
 headless=false
 
