@@ -11,9 +11,10 @@ CAI DB DEMO - CHI IMPORT 1 FILE
    Thay READY o cuoi va khong co ERROR la xong.
 
 2. Cau hinh 3 ban web tren Tomcat (cung WAR/code hien tai):
-     URL http://localhost:8080/f02    -> DB cinebook_f02_demo
-     URL http://localhost:8080/f03    -> DB cinebook_f03_demo
-     URL http://localhost:8080/design -> DB cinebook_design_demo
+     URL http://localhost:18084/f02    -> DB cinebook_f02_demo
+     URL http://localhost:18084/f03    -> DB cinebook_f03_demo
+     URL http://localhost:18084/design -> DB cinebook_design_demo
+   Day la URL may Hau; may khac dien cong/context da trien khai thuc te.
    Moi ban web dung WEB-INF/classes/db.properties rieng:
      db.url=jdbc:mysql://localhost:3306/TEN_DB?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
      db.user=root
