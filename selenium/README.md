@@ -9,6 +9,12 @@ tạo file cấu hình web, nhận file Notepad, chạy web và chạy từng F 
 Xem [MAIN-FLOWS.md](MAIN-FLOWS.md) để cấu hình tài khoản, chạy demo và đối chiếu Sheet.
 Testcase chi tiết của từng chức năng vẫn do thành viên phụ trách viết trong `tests/f01` … `tests/f08`.
 
+Phần của F02/F03 theo KAN-53: [phân vùng tương đương và bảng quyết định](TECHNIQUES-F02-F03.md),
+mỗi ca là một hàm `@Test` riêng và mặc định dừng 2,5 giây ở kết quả.
+
+Các F còn lại và lệnh chạy kỹ thuật chung: [TECHNIQUES-F01-F08.md](TECHNIQUES-F01-F08.md).
+Hai ca VNPay Sandbox để sau; các test kỹ thuật được chọn bằng `run-techniques.ps1`.
+
 ## Viết test ở đâu?
 
 Các đường dẫn dưới đây tính từ thư mục `selenium/`:

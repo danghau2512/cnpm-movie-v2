@@ -4,3 +4,5 @@
 /.idea/
 *.iml
 .env
+/techniques.local.properties
+/techniques-all.local.properties

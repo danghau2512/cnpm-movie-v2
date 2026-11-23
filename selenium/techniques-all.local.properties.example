@@ -1,0 +1,18 @@
+# Copy to techniques-all.local.properties, fill test accounts from your current config.
+baseUrl=http://localhost:18084/design
+headless=false
+pageLoadStrategy=eager
+flow.admin.email=YOUR_ADMIN_EMAIL
+flow.admin.password=YOUR_ADMIN_PASSWORD
+flow.customer.email=YOUR_CUSTOMER_A_EMAIL
+flow.customer.password=YOUR_CUSTOMER_A_PASSWORD
+flow.otherCustomer.email=YOUR_CUSTOMER_B_EMAIL
+flow.otherCustomer.password=YOUR_CUSTOMER_B_PASSWORD
+flow.roomId=1
+flow.daysAhead=14
+flow.screenshots=true
+technique.pauseMs=2500
+# Must point to the SAME test database as the web at baseUrl.
+technique.dbUrl=jdbc:mysql://localhost:3306/cinebook_design_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh
+technique.dbUser=root
+technique.dbPassword=

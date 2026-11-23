@@ -3,6 +3,7 @@ package com.cinebook.base;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,6 +22,7 @@ public abstract class BaseTest {
         config = new TestConfig();
         baseUrl = config.get("baseUrl", "http://localhost:8080/CineBook_war_exploded").replaceAll("/+$", "");
         ChromeOptions options = new ChromeOptions();
+        options.setPageLoadStrategy(PageLoadStrategy.fromString(config.get("pageLoadStrategy", "normal")));
         if (Boolean.parseBoolean(config.get("headless", "false")))
             options.addArguments("--headless=new");
         options.addArguments("--window-size=1440,1000");

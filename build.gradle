@@ -19,7 +19,7 @@ java {
 }
 
 dependencies {
-    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
     implementation 'com.mysql:mysql-connector-j:8.0.33'
     implementation 'org.jdbi:jdbi3-core:3.50.0'
@@ -34,7 +34,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:5.12.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
 
-    testImplementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     testImplementation 'org.apache.tomcat.embed:tomcat-embed-core:10.1.34'
     testImplementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.1.34'
 }
@@ -50,6 +50,19 @@ test {
 
 war {
     archiveFileName = 'ROOT.war'
+}
+
+// IntelliJ deploys the exact Gradle WAR instead of mixing Maven/IDE output folders.
+tasks.register('prepareIntellijWar', Sync) {
+    dependsOn tasks.named('war')
+    from({ zipTree(tasks.named('war').get().archiveFile.get().asFile) })
+    into layout.buildDirectory.dir('intellij-war')
+}
+
+tasks.register('syncIntellijDeployment', Sync) {
+    dependsOn tasks.named('prepareIntellijWar')
+    from layout.buildDirectory.dir('intellij-war')
+    into layout.projectDirectory.dir('out/artifacts/cnpm_movie_v2_main_war_exploded')
 }
 remotes {
     server {

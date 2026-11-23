@@ -1,5 +1,8 @@
 # F02
 
+Kỹ thuật KAN-53: `F02EquivalencePartitionTest` — 5 ca cho 4 phân vùng; dừng 2,5 giây/ca.
+Xem `selenium/TECHNIQUES-F02-F03.md` để biết dữ liệu và lệnh chạy.
+
 Phụ trách theo Sheet: Hoàng Trần Bảo.
 Thành viên tự viết các lớp ...Test kế thừa com.cinebook.base.BaseTest trong thư mục này.
 Đối chiếu mã TC, Expected và kỹ thuật trong Sheet.
