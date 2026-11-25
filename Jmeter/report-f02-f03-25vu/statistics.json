@@ -1,0 +1,50 @@
+{
+  "F02 - Search movie" : {
+    "transaction" : "F02 - Search movie",
+    "sampleCount" : 1352,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 118.72559171597632,
+    "medianResTime" : 106.0,
+    "minResTime" : 84.0,
+    "maxResTime" : 751.0,
+    "pct1ResTime" : 153.0,
+    "pct2ResTime" : 197.3499999999999,
+    "pct3ResTime" : 266.3400000000006,
+    "throughput" : 3.2439487878380713,
+    "receivedKBytesPerSec" : 50.09062028373754,
+    "sentKBytesPerSec" : 0.45301237955160567
+  },
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 2694,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 122.57089829250178,
+    "medianResTime" : 112.0,
+    "minResTime" : 84.0,
+    "maxResTime" : 751.0,
+    "pct1ResTime" : 158.5,
+    "pct2ResTime" : 201.0,
+    "pct3ResTime" : 249.10000000000036,
+    "throughput" : 6.463903871624085,
+    "receivedKBytesPerSec" : 85.04920808779777,
+    "sentKBytesPerSec" : 0.8806626641169357
+  },
+  "F03 - View showtimes" : {
+    "transaction" : "F03 - View showtimes",
+    "sampleCount" : 1342,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 126.44485842026833,
+    "medianResTime" : 117.0,
+    "minResTime" : 95.0,
+    "maxResTime" : 354.0,
+    "pct1ResTime" : 160.0,
+    "pct2ResTime" : 203.0,
+    "pct3ResTime" : 247.13999999999987,
+    "throughput" : 3.245214396951143,
+    "receivedKBytesPerSec" : 35.23282452295107,
+    "sentKBytesPerSec" : 0.43100503709507365
+  }
+}
