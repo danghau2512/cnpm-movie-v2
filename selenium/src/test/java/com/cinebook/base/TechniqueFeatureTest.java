@@ -6,7 +6,6 @@ import com.cinebook.utils.TestDatabase;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import java.time.LocalDate;
-import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TechniqueFeatureTest extends FeatureMainTest {
@@ -15,9 +14,6 @@ public abstract class TechniqueFeatureTest extends FeatureMainTest {
 
     @BeforeEach
     void prepareTechnique() throws Exception {
-        String feature = getClass().getSimpleName().substring(0, 3).toLowerCase(Locale.ROOT);
-        baseUrl = config.get(feature + ".baseUrl", baseUrl).replaceAll("/+$", "");
-        login = new LoginPage(driver, baseUrl);
         pauseMs = Integer.parseInt(config.get("technique.pauseMs", "2500"));
         assertTrue(pauseMs >= 0 && pauseMs <= 10000);
         db = new TestDatabase(config);

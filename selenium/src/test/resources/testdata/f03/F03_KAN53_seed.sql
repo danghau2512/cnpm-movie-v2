@@ -1,3 +1,4 @@
+-- Legacy standalone F03 database only. The shared demo uses F03Fixture.java automatically.
 -- KAN-53 / F03: scoped fixtures for TC005,006,011,012,013.
 -- Import the original project SQL into a SEPARATE cinebook_f03* DB first.
 -- D = MySQL CURDATE() at seed time. Does not create users or touch application code.

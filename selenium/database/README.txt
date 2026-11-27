@@ -1,36 +1,27 @@
-CAI DB DEMO - CHI IMPORT 1 FILE
+CAI DAT MOT DB DUNG CHUNG CHO F01-F08
 
-1. File selenium-demo.sql da gom DB goc movie_ticket_db.sql ban gui va du lieu
-   bo sung. KHONG can import file goc hoac hai seed cu them lan nua.
-   Dung MySQL 8+; tai khoan import can quyen CREATE DATABASE/ROUTINE.
-   Chi import lan dau khi CHUA co 3 DB ten duoi day.
-   Mo MySQL CLI (them -p neu MySQL co mat khau):
+1. Neu da import bo demo cu va co cinebook_design_demo, dung lai DB nay.
+   Tren may moi, mo MySQL 8+ CLI (them -p neu co mat khau):
      mysql --default-character-set=utf8mb4 -u root
-   Sau do (doi duong dan theo may ban):
+   Import mot lan, doi duong dan cho dung thu muc repo tren may:
      SOURCE H:/CNPM/cnpm/version2/cnpm-movie-v2/selenium/database/selenium-demo.sql;
-   Thay READY o cuoi va khong co ERROR la xong.
+   Kiem tra khong co ERROR va co READY o cuoi. SQL da gom du lieu goc va
+   tai khoan demo. Tai khoan import can quyen tao database va routine.
 
-2. Cau hinh 3 ban web tren Tomcat (cung WAR/code hien tai):
-     URL http://localhost:8080/f02    -> DB cinebook_f02_demo
-     URL http://localhost:8080/f03    -> DB cinebook_f03_demo
-     URL http://localhost:8080/CineBook_war_exploded -> DB cinebook_design_demo
-   Day la URL mac dinh; may khac dien cong/context da trien khai thuc te.
-   Moi ban web dung WEB-INF/classes/db.properties rieng:
-     db.url=jdbc:mysql://localhost:3306/TEN_DB?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+2. Trien khai CineBook tai http://localhost:8080/CineBook_war_exploded.
+   Trong WEB-INF/classes/db.properties cua web, cau hinh:
+     db.url=jdbc:mysql://localhost:3306/cinebook_design_demo?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
      db.user=root
      db.password=
-   Thay TEN_DB theo bang tren, dien user/password MySQL cua may ban, restart.
-   Khong doi ca 3 ban ve chung 1 DB: F03 them phim Horror lam F02 sai so luong.
+   Dien user/password MySQL cua may, khoi dong lai Tomcat va mo /login.
 
-3. Mo selenium/database/demo.properties: sua 3 URL neu context/port khac;
-   sua technique.dbUser/dbPassword theo MySQL. JDBC phai cung DB voi baseUrl.
-   Cac tai khoan web da co san trong SQL va config; khong dung tai khoan that.
+3. Trong selenium/database/demo.properties, kiem tra baseUrl tro dung web,
+   technique.dbUrl tro cung DB va technique.dbUser/dbPassword dung voi MySQL.
+   Tai khoan JDBC can quyen SELECT, INSERT va DELETE cho du lieu thu cua F03.
    Tu thu muc goc repo chay:
      .\selenium\run-techniques.ps1 -Feature all -ConfigFile .\selenium\database\demo.properties
-   Chay rieng: thay all bang F01, F02, ... F08. Mac dinh dung 2,5 giay/ca.
+   Chay rieng tung F bang cach thay all bang F01, F02, ... F08.
 
-41 ca thiet ke; 2 ca VNPay de sau. Cac ca tu tao them phim/don qua giao dien.
-F03 co lich D+7/D+8/D+9: import gan ngay demo; neu de qua 7 ngay thi dung
-seed F03 cu de lam moi lich (chi khi chua co don tren cac suat 90301-90307).
-DB chinh movie_ticket_db khong bi sua. File SQL khong DROP TABLE/DATABASE.
-Giu DB demo de doi chieu anh; khong import lai de xoa ket qua cu.
+Chay cac lenh noi tiep. F03 tu tao va don phim/lich theo ngay demo.
+Neu tat ngang Maven khi F03 dang chay, chay lai F03 den het truoc F02.
+Xem selenium/LENH-CHAY.md de lay day du 20 lenh.

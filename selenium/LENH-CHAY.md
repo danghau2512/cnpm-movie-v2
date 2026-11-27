@@ -3,26 +3,13 @@
 Mở PowerShell tại thư mục gốc `cnpm-movie-v2`. Pull đủ code Selenium mới.
 Các lệnh dưới đây dùng cùng `selenium/database/demo.properties`, không ghi cứng URL trong lệnh.
 
-## Cấu hình một lần trên mỗi máy
+## Cấu hình một lần trên laptop demo
 
-- Cần JDK 17+, Chrome, MySQL và Tomcat đang chạy code hiện tại.
-- Import `selenium/database/selenium-demo.sql` một lần nếu chưa có 3 DB demo.
-- Triển khai 3 bản web cùng code, mỗi bản dùng `WEB-INF/classes/db.properties` riêng:
+1. Cài JDK 17+, Chrome, MySQL và Tomcat. Nếu đã có `cinebook_design_demo` từ bộ SQL demo trước, dùng lại DB đó. Máy mới import `selenium/database/selenium-demo.sql` một lần.
+2. Trong cấu hình `db.properties` của web, đặt `db.url` trỏ tới `cinebook_design_demo` và điền tài khoản MySQL của máy. Khởi động Tomcat và mở `http://localhost:8080/CineBook_war_exploded/login`.
+3. Trong `selenium/database/demo.properties`, dùng `baseUrl=http://localhost:8080/CineBook_war_exploded`. Cho `technique.dbUrl` trỏ cùng DB với web và điền `technique.dbUser`, `technique.dbPassword` theo máy. F03 dùng tài khoản này để đọc, thêm và xóa dữ liệu thử.
 
-| Khóa trong demo.properties | URL mặc định | DB của bản web |
-|---|---|---|
-| baseUrl | http://localhost:8080/CineBook_war_exploded | cinebook_design_demo |
-| f02.baseUrl | http://localhost:8080/f02 | cinebook_f02_demo |
-| f03.baseUrl | http://localhost:8080/f03 | cinebook_f03_demo |
-
-Trên máy khác, sửa **3 URL** theo các bản web thực tế. Sửa `technique.dbUrl`,
-`technique.dbUser`, `technique.dbPassword` theo MySQL; JDBC phải cùng DB với `baseUrl`.
-Đăng nhập mỗi URL `/login` phải mở được trước khi chạy. Import SQL không tự triển khai web.
-Mở ngày demo đủ gần lúc import: F03 có lịch D+7/D+8/D+9 và bắt buộc còn trong tương lai.
-Nếu cần làm mới lịch F03, xem `TECHNIQUES-F02-F03.md`; không import lại SQL tổng đè kết quả.
-
-Không gom F02 vào DB design: các test quản lý phim tạo dữ liệu mới sẽ làm sai số phim F02.
-Các lệnh giống nhau trên mọi máy; URL/DB/mật khẩu là cấu hình của từng máy.
+Chạy từng lệnh nối tiếp trên cùng DB. F03 tự tạo phim và lịch theo ngày chạy rồi dọn khi kết thúc. Nếu tắt ngang tiến trình F03, chạy lại F03 đến hết trước khi chạy F02.
 
 ## 1–4. Bốn lệnh tổng
 

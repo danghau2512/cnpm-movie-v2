@@ -12,7 +12,7 @@ public final class AdminScheduleStatePage extends UiPage {
     public Snapshot read(int id) {
         open("/admin/showtimes?edit=" + id);
         assertEquals("" + id, driver.findElement(By.cssSelector(".management-form input[name=id]")).getDomProperty("value"),
-                "Import testdata/f03/F03_KAN53_seed.sql into the F03 test DB first");
+                "Verify that the web and Selenium JDBC both use cinebook_design_demo");
         return new Snapshot(id,
                 Integer.parseInt(visible(By.name("movieId")).getDomProperty("value")),
                 Integer.parseInt(visible(By.name("roomId")).getDomProperty("value")),

@@ -18,11 +18,11 @@ Mặc định giữ màn hình kết quả **2.500 ms mỗi ca**. Ảnh và log 
 | EP4: không hợp lệ | Chuỗi rỗng | F02_Search_005 | Yêu cầu nhập từ khóa, 0 phim |
 | EP4: biến thể cùng nhóm | Ba dấu cách U+0020 | F02_Search_006 | Yêu cầu nhập từ khóa, 0 phim |
 
-F02 dùng DB gốc theo precondition của Sheet: 8 phim gốc, chưa thêm phim F03 vào đó.
+DB demo có 8 phim gốc. F02 kiểm tra chính xác tên và số lượng phim Horror theo Sheet.
 Nếu đã thêm các phim Horror thử vào cùng DB, TC003 phải báo sai số lượng; không tự loại phim để làm xanh test.
 
 ```powershell
-.\selenium\run-selenium.ps1 -Test F02EquivalencePartitionTest -PauseMs 2500
+.\selenium\run-selenium.ps1 -Test F02EquivalencePartitionTest -ConfigFile .\selenium\database\demo.properties -PauseMs 2500
 ```
 
 ## F03 — 5 quy tắc đại diện
@@ -41,36 +41,13 @@ Admin thao tác qua một Chrome ẩn riêng, Customer giữ nguyên phiên tron
 Tài khoản đọc từ cấu hình hiện có; không dùng mật khẩu riêng ghi trong Sheet.
 R3 không tự kết luận các nhánh đúng giây bắt đầu (Q01) hoặc URL cũ sau bắt đầu (Q04) chưa chốt.
 
-F03 cần DB **riêng** tên bắt đầu bằng `cinebook_f03`, đã import SQL gốc của dự án.
-Trong MySQL client, chọn DB thử này rồi import fixture kèm repo:
+F02 và F03 dùng chung `cinebook_design_demo` và một bản web. Khi bắt đầu F03, Selenium dùng JDBC để thêm 3 phim và 7 suất cho 5 quy tắc trên. Các mốc thời gian được tính theo ngày chạy trên MySQL. Khi lớp test kết thúc, Selenium dọn các dòng này để F02 vẫn thấy đúng hai phim Horror. Nếu tắt ngang Maven, chạy lại F03 đến hết trước F02.
 
-```sql
-USE cinebook_f03_test;
-SOURCE H:/CNPM/cnpm/version2/cnpm-movie-v2/selenium/src/test/resources/testdata/f03/F03_KAN53_seed.sql;
-```
-
-Thay đường dẫn theo máy. Seed dùng D = CURDATE() của MySQL, tạo lại mốc tương lai/quá khứ khi chạy lại.
-Seed chỉ dành cho nhóm TC của KAN-53, không phải toàn bộ fixture của 15 ca F03.
-Nó từ chối DB gốc `movie_ticket_db`, ID trùng dữ liệu khác hoặc suất fixture đã có booking.
-Web chạy F03 phải trỏ đúng DB đã seed; không import fixture F03 vào DB chạy F02.
+Từ thư mục gốc repo, dùng kế tiếp hai lệnh sau để demo từng phần:
 
 ```powershell
-.\selenium\run-selenium.ps1 -Test F03DecisionTableTest -BaseUrl http://localhost:8080/CineBook_war_exploded -PauseMs 2500
-```
-
-Muốn dùng 2 bản web/DB và chạy cả hai lớp trong một lệnh, đặt URL tương ứng trong file cấu hình riêng:
-
-```properties
-f02.baseUrl=http://localhost:8080/f02
-f03.baseUrl=http://localhost:8080/f03
-headless=false
-technique.pauseMs=2500
-```
-
-Giữ các dòng tài khoản admin/customer như cấu hình hiện có rồi chạy:
-
-```powershell
-.\selenium\run-selenium.ps1 -Test 'F02EquivalencePartitionTest,F03DecisionTableTest' -ConfigFile .\selenium\techniques.local.properties -PauseMs 2500
+.\selenium\run-techniques.ps1 -Feature F02 -ConfigFile .\selenium\database\demo.properties
+.\selenium\run-techniques.ps1 -Feature F03 -ConfigFile .\selenium\database\demo.properties
 ```
 
 Không chạy song song các ca F03 vì R4/R5 dùng chung suất 90307. `-PauseMs 2000` đổi thời gian quan sát thành 2 giây.

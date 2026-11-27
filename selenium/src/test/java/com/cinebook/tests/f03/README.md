@@ -1,7 +1,7 @@
 # F03
 
 Kỹ thuật KAN-53: `F03DecisionTableTest` — 5 quy tắc; dừng 2,5 giây/ca, tự khôi phục trạng thái sau R4/R5.
-Xem `selenium/TECHNIQUES-F02-F03.md` và fixture trong `testdata/f03` trước khi chạy.
+Xem `selenium/TECHNIQUES-F02-F03.md` để cấu hình DB demo dùng chung trước khi chạy.
 
 Phụ trách theo Sheet: Hoàng Trần Bảo.
 Thành viên tự viết các lớp ...Test kế thừa com.cinebook.base.BaseTest trong thư mục này.

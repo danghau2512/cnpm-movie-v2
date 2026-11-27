@@ -13,11 +13,9 @@ public final class LoginPage extends UiPage {
         fill("email", account.email());
         fill("password", account.password());
         click(By.cssSelector("#loginForm button[type=submit]"));
-        wait.until(d -> !d.getCurrentUrl().contains("/login")
-                || !d.findElements(By.cssSelector("#loginMessage")).isEmpty()
-                && !d.findElement(By.id("loginMessage")).getText().isBlank());
-        assertEquals(baseUrl + (admin ? "/admin/dashboard" : "/home"), driver.getCurrentUrl(),
-                "Login/role redirect failed. Check ACTIVE account and role. " + text());
+        String destination = baseUrl + (admin ? "/admin/dashboard" : "/home");
+        wait.withMessage("Expected login to redirect to " + destination)
+                .until(ExpectedConditions.urlToBe(destination));
     }
 
     public void logout() {

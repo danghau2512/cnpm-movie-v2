@@ -2,6 +2,7 @@ package com.cinebook.tests.f03;
 
 import com.cinebook.base.TechniqueTest;
 import com.cinebook.pages.*;
+import com.cinebook.utils.TestConfig;
 import com.cinebook.pages.AdminScheduleStatePage.Snapshot;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
@@ -11,6 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class F03DecisionTableTest extends TechniqueTest {
+    private static F03Fixture fixture;
+
+    @BeforeAll
+    static void taoLichChoNhomCa() throws Exception {
+        fixture = F03Fixture.prepare(new TestConfig());
+    }
+
+    @AfterAll
+    static void donLichSauKhiChay() throws Exception {
+        if (fixture != null) fixture.close();
+    }
+
     private WebDriver adminDriver;
     private AdminScheduleStatePage admin;
     private ScheduleTechniquePage schedules;
@@ -27,7 +40,7 @@ public class F03DecisionTableTest extends TechniqueTest {
         admin = new AdminScheduleStatePage(adminDriver, baseUrl);
         schedules = new ScheduleTechniquePage(driver, baseUrl);
         date = admin.read(90301).date();
-        assertTrue(date.isAfter(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))), "Cần chạy lại seed để lịch nằm trong tương lai");
+        assertTrue(date.isAfter(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"))), "Suất 90301 của F03 phải nằm trong tương lai");
         new LoginPage(driver, baseUrl).login(config.account("customer"), false);
     }
 

@@ -50,7 +50,7 @@ public final class SearchTechniquePage extends UiPage {
     public void assertGenreMatch() {
         count(2);
         Set<String> titles = cards().stream().map(e -> e.findElement(By.cssSelector(".movie-info h3")).getText()).collect(Collectors.toSet());
-        assertEquals(Set.of(PHI, "Đại Tiệc Trăng Máu 8"), titles, "Use original F02 data without F03 seed movies");
+        assertEquals(Set.of(PHI, "Đại Tiệc Trăng Máu 8"), titles, "Expected the two Horror movies specified in F02_Search_003");
         for (WebElement card : cards()) assertTrue(card.getDomAttribute("data-genre").contains("Horror"));
     }
 

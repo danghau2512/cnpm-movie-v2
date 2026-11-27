@@ -1,7 +1,5 @@
 # Copy to techniques-all.local.properties, fill test accounts from your current config.
 baseUrl=http://localhost:8080/CineBook_war_exploded
-f02.baseUrl=http://localhost:8080/f02
-f03.baseUrl=http://localhost:8080/f03
 headless=false
 pageLoadStrategy=eager
 flow.admin.email=YOUR_ADMIN_EMAIL
@@ -15,6 +13,6 @@ flow.daysAhead=14
 flow.screenshots=true
 technique.pauseMs=2500
 # Must point to the SAME test database as the web at baseUrl.
-technique.dbUrl=jdbc:mysql://localhost:3306/cinebook_design_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh
+technique.dbUrl=jdbc:mysql://localhost:3306/cinebook_design_demo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh
 technique.dbUser=root
 technique.dbPassword=

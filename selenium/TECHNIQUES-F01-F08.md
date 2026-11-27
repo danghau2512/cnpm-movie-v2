@@ -21,29 +21,12 @@ không được tính là Pass hoặc thay bằng callback giả.
 Tổng hiện có **41 ca cho 43 dòng thiết kế**, gồm 10 F02/F03 đã làm trước và 31 ca còn lại.
 Năm dòng chưa có ID dùng nhãn `DESIGN_...`, không tự gán mã TC chính thức hoặc sửa Sheet.
 
-## Chuẩn bị cho F01, F04–F08
+## Chuẩn bị trên laptop demo
 
-1. Dùng DB thử riêng có tên bắt đầu `cinebook_design`, đã import SQL gốc. Không dùng DB gốc để demo.
-2. Trong MySQL client, chọn DB đó rồi import `selenium/src/test/resources/testdata/design/remaining-design-seed.sql`.
-   Seed chỉ thêm tài khoản test LOCKED và phòng test INACTIVE; không thay cấu trúc DB.
-   Ví dụ (đổi đường dẫn theo máy):
+Dùng chung web `http://localhost:8080/CineBook_war_exploded` và DB `cinebook_design_demo` cho F01–F08. Xem [hướng dẫn cấu hình và 20 lệnh](LENH-CHAY.md). Bộ SQL demo đã có tài khoản LOCKED, hai Customer ACTIVE, Admin và phòng thử INACTIVE.
 
-```sql
-USE cinebook_design_test;
-SOURCE H:/CNPM/cnpm/version2/cnpm-movie-v2/selenium/src/test/resources/testdata/design/remaining-design-seed.sql;
-```
+`TestDatabase` dùng SELECT để đối chiếu kết quả. F03 dùng JDBC để thêm và dọn phim, suất chiếu dành cho bảng quyết định. Các thao tác nghiệp vụ vẫn đi qua trình duyệt.
 
-3. Web phải chạy với chính DB thử này. Có 1 Admin ACTIVE và 2 Customer ACTIVE khác nhau, phòng 1/4 ACTIVE có ghế.
-4. Tạo cấu hình riêng một lần:
-
-```powershell
-Copy-Item .\selenium\techniques-all.local.properties.example .\selenium\techniques-all.local.properties
-notepad .\selenium\techniques-all.local.properties
-```
-
-Điền `baseUrl`, ba tài khoản, `technique.dbUrl`, `technique.dbUser`, `technique.dbPassword`.
-**Web và JDBC phải cùng DB thử.** `TestDatabase` chỉ chạy SELECT để kiểm tra đơn, thanh toán, ghế và dữ liệu lưu.
-Các thao tác thêm/sửa/xác nhận/hủy vẫn đi qua giao diện Selenium.
 F04 ghế sai phòng và F05 thanh toán lại dùng form POST trong chính phiên trình duyệt như Procedure trong Sheet.
 Không đổi mật khẩu hoặc khóa tài khoản thật; tài khoản LOCKED là fixture riêng của seed.
 
@@ -71,15 +54,8 @@ Từ thư mục gốc repo, sau khi web/DB thử đã sẵn sàng:
 .\selenium\run-techniques.ps1 -Feature remaining -ConfigFile C:\testing\design.properties
 ```
 
-F02 cần DB phim gốc; F03 cần fixture lịch riêng. Xem [hướng dẫn F02/F03](TECHNIQUES-F02-F03.md).
-Nếu đã có 3 bản web tương ứng, thêm hai URL vào cấu hình chung:
+Dùng `run-techniques.ps1 -Feature all` để chạy 41 ca trên cùng web và DB. Xem [dữ liệu F02/F03](TECHNIQUES-F02-F03.md).
 
-```properties
-f02.baseUrl=http://localhost:8080/f02
-f03.baseUrl=http://localhost:8080/f03
-```
-
-Khi đó `run-techniques.ps1 -Feature all` chạy đủ 41 ca. Nếu không có các web/fixture đó, chỉ chạy `remaining`.
 Các test kỹ thuật không nằm trong `*MainTest`; các lớp luồng chính vẫn chạy riêng như trước.
 
 ## Phạm vi đối chiếu
