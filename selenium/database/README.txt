@@ -11,10 +11,10 @@ CAI DB DEMO - CHI IMPORT 1 FILE
    Thay READY o cuoi va khong co ERROR la xong.
 
 2. Cau hinh 3 ban web tren Tomcat (cung WAR/code hien tai):
-     URL http://localhost:18084/f02    -> DB cinebook_f02_demo
-     URL http://localhost:18084/f03    -> DB cinebook_f03_demo
-     URL http://localhost:18084/design -> DB cinebook_design_demo
-   Day la URL may Hau; may khac dien cong/context da trien khai thuc te.
+     URL http://localhost:8080/f02    -> DB cinebook_f02_demo
+     URL http://localhost:8080/f03    -> DB cinebook_f03_demo
+     URL http://localhost:8080/CineBook_war_exploded -> DB cinebook_design_demo
+   Day la URL mac dinh; may khac dien cong/context da trien khai thuc te.
    Moi ban web dung WEB-INF/classes/db.properties rieng:
      db.url=jdbc:mysql://localhost:3306/TEN_DB?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
      db.user=root
@@ -23,7 +23,7 @@ CAI DB DEMO - CHI IMPORT 1 FILE
    Khong doi ca 3 ban ve chung 1 DB: F03 them phim Horror lam F02 sai so luong.
 
 3. Mo selenium/database/demo.properties: sua 3 URL neu context/port khac;
-   sua technique.dbUser/dbPassword theo MySQL. JDBC phai cung DB voi /design.
+   sua technique.dbUser/dbPassword theo MySQL. JDBC phai cung DB voi baseUrl.
    Cac tai khoan web da co san trong SQL va config; khong dung tai khoan that.
    Tu thu muc goc repo chay:
      .\selenium\run-techniques.ps1 -Feature all -ConfigFile .\selenium\database\demo.properties

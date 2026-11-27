@@ -75,8 +75,8 @@ F02 cần DB phim gốc; F03 cần fixture lịch riêng. Xem [hướng dẫn F0
 Nếu đã có 3 bản web tương ứng, thêm hai URL vào cấu hình chung:
 
 ```properties
-f02.baseUrl=http://localhost:18083/f02
-f03.baseUrl=http://localhost:18083/f03
+f02.baseUrl=http://localhost:8080/f02
+f03.baseUrl=http://localhost:8080/f03
 ```
 
 Khi đó `run-techniques.ps1 -Feature all` chạy đủ 41 ca. Nếu không có các web/fixture đó, chỉ chạy `remaining`.

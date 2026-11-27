@@ -9,11 +9,11 @@ Các lệnh dưới đây dùng cùng `selenium/database/demo.properties`, khôn
 - Import `selenium/database/selenium-demo.sql` một lần nếu chưa có 3 DB demo.
 - Triển khai 3 bản web cùng code, mỗi bản dùng `WEB-INF/classes/db.properties` riêng:
 
-| Khóa trong demo.properties | URL hiện tại máy Hậu | DB của bản web |
+| Khóa trong demo.properties | URL mặc định | DB của bản web |
 |---|---|---|
-| baseUrl | http://localhost:18084/design | cinebook_design_demo |
-| f02.baseUrl | http://localhost:18084/f02 | cinebook_f02_demo |
-| f03.baseUrl | http://localhost:18084/f03 | cinebook_f03_demo |
+| baseUrl | http://localhost:8080/CineBook_war_exploded | cinebook_design_demo |
+| f02.baseUrl | http://localhost:8080/f02 | cinebook_f02_demo |
+| f03.baseUrl | http://localhost:8080/f03 | cinebook_f03_demo |
 
 Trên máy khác, sửa **3 URL** theo các bản web thực tế. Sửa `technique.dbUrl`,
 `technique.dbUser`, `technique.dbPassword` theo MySQL; JDBC phải cùng DB với `baseUrl`.

@@ -3,11 +3,10 @@
 Từ thư mục gốc dự án, sau khi web/MySQL đã chạy:
 
 ```powershell
-.\selenium\run-selenium.ps1 -Test LuongAdminTest -ConfigFile .\selenium\database\demo.properties -BaseUrl http://localhost:18084/design
+.\selenium\run-selenium.ps1 -Test LuongAdminTest -ConfigFile .\selenium\database\demo.properties
 ```
 
-Thay `-BaseUrl` bằng URL web thực tế trên máy bạn. Cổng 18084 chỉ là bản web
-kiểm thử hiện chạy trên máy Hậu. Dùng DB demo, tài khoản Admin/Customer và
+URL web lấy từ `baseUrl` trong cấu hình chung. Dùng DB demo, tài khoản Admin/Customer và
 phòng hoạt động có ghế trong config. Không cần import thêm SQL.
 
 Luồng hiển thị: đăng nhập Admin → tổng quan → nhập/thêm/sửa phim, chọn thể loại

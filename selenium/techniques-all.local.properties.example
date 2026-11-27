@@ -1,5 +1,7 @@
 # Copy to techniques-all.local.properties, fill test accounts from your current config.
-baseUrl=http://localhost:18084/design
+baseUrl=http://localhost:8080/CineBook_war_exploded
+f02.baseUrl=http://localhost:8080/f02
+f03.baseUrl=http://localhost:8080/f03
 headless=false
 pageLoadStrategy=eager
 flow.admin.email=YOUR_ADMIN_EMAIL

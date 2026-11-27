@@ -6,17 +6,7 @@ Chạy từ thư mục gốc repo (web và MySQL đã bật):
 .\selenium\run-selenium.ps1 -Test LuongUserTest -ConfigFile .\selenium\database\demo.properties
 ```
 
-Dùng URL `baseUrl` trong config, mặc định `/design` với DB `cinebook_design_demo`.
-Có thể dùng config hiện tại bằng cách thay đường dẫn `-ConfigFile`.
-Nếu `/design` ở cổng 8080 trả 404, phải dùng đúng URL web đã triển khai.
-Trên máy Hậu, bản web kiểm thử hiện chạy ở cổng 18084:
-
-```powershell
-.\selenium\run-selenium.ps1 -Test LuongUserTest -ConfigFile .\selenium\database\demo.properties -BaseUrl http://localhost:18084/design
-```
-
-`-BaseUrl` ghi đè URL cho lần chạy này. Các máy khác điền URL thực tế;
-import SQL không tự triển khai web `/design` vào Tomcat.
+Dùng `baseUrl` trong cấu hình chung, mặc định là http://localhost:8080/CineBook_war_exploded với DB `cinebook_design_demo`.
 Cần dữ liệu phim gốc ID 2, thể loại Horror, phòng 1 hoạt động có ghế,
 tài khoản Admin và Customer trong config. Không cần thêm SQL mới.
 

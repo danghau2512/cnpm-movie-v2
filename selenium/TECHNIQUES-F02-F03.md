@@ -61,8 +61,8 @@ Web chạy F03 phải trỏ đúng DB đã seed; không import fixture F03 vào 
 Muốn dùng 2 bản web/DB và chạy cả hai lớp trong một lệnh, đặt URL tương ứng trong file cấu hình riêng:
 
 ```properties
-f02.baseUrl=http://localhost:18083/f02
-f03.baseUrl=http://localhost:18083/f03
+f02.baseUrl=http://localhost:8080/f02
+f03.baseUrl=http://localhost:8080/f03
 headless=false
 technique.pauseMs=2500
 ```
