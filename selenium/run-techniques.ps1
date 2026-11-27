@@ -20,11 +20,8 @@ $classes = [ordered]@{
 if ($Feature -eq 'all') { $test = $classes.Values -join ',' }
 elseif ($Feature -eq 'remaining') { $test = ($classes.GetEnumerator() | Where-Object {$_.Key -notin @('F02','F03')} | ForEach-Object {$_.Value}) -join ',' }
 else { $test = $classes[$Feature] }
-if (!$ConfigFile) {
-    $localConfig = Join-Path $PSScriptRoot 'techniques-all.local.properties'
-    $ConfigFile = if (Test-Path -LiteralPath $localConfig) { $localConfig } else { Join-Path $PSScriptRoot 'database/demo.properties' }
-}
-$run = @{Test=$test;ConfigFile=$ConfigFile;PauseMs=$PauseMs}
+$run = @{Test=$test;PauseMs=$PauseMs}
+if ($ConfigFile) { $run.ConfigFile = $ConfigFile }
 if ($PSBoundParameters.ContainsKey('Headless')) { $run.Headless = $Headless }
 & (Join-Path $PSScriptRoot 'run-selenium.ps1') @run
 exit $LASTEXITCODE

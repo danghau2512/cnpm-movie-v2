@@ -17,7 +17,7 @@ Nếu có code đang làm, commit trên nhánh của mình trước khi đổi n
 Sau khi pull, file nằm tại:
 
 ```text
-cnpm-movie-v2/selenium/mainflows.local.properties
+cnpm-movie-v2/selenium/database/demo.properties
 ```
 
 Không cần tạo file Notepad hay copy file mẫu nữa. Nếu URL web khác, sửa `baseUrl` trong file.

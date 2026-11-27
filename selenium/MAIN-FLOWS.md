@@ -46,7 +46,7 @@ Ví dụ từ thư mục gốc repo:
 3. Repo đã có file cấu hình tài khoản test. Mở để kiểm tra URL/tài khoản nếu máy mình khác:
 
 ```powershell
-notepad .\selenium\mainflows.local.properties
+notepad .\selenium\database\demo.properties
 ```
 
 Điền URL, email/mật khẩu tài khoản thử, phòng ACTIVE có ghế (`flow.roomId`, mặc định 1).

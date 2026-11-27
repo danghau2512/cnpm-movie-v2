@@ -1,4 +1,4 @@
-# Copy to techniques-all.local.properties, fill test accounts from your current config.
+# Copy to techniques-all.local.properties, fill test accounts and pass this file with -ConfigFile.
 baseUrl=http://localhost:8080/CineBook_war_exploded
 headless=false
 pageLoadStrategy=eager
